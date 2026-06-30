@@ -53,7 +53,7 @@ public class Telekinesis : MonoBehaviour
 
     private void HandleInput()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             if (_heldObject == null) TryPickUp();
             else DropObject();
@@ -163,7 +163,7 @@ public class Telekinesis : MonoBehaviour
         Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight + rayDirection * spawnOffset;
         float castDistance = Mathf.Max(0.1f, customDistance - spawnOffset);
 
-        return Physics.BoxCast(rayStartPoint, BoxHalfExtents, rayDirection, out hit, playerTransform.rotation, distance);
+        return Physics.BoxCast(rayStartPoint, BoxHalfExtents, rayDirection, out hit, playerTransform.rotation, castDistance);
 
     }
     private void UpdateUI()
@@ -172,7 +172,7 @@ public class Telekinesis : MonoBehaviour
 
         if (_heldObject != null)
         {
-            SetUI(highlightColor, "E: Положить объект");
+            SetUI(highlightColor, "F: Положить объект");
             return;
         }
 
@@ -180,7 +180,7 @@ public class Telekinesis : MonoBehaviour
         RaycastHit hitE;
         if (CastBox(distance, out hitE) && hitE.collider.transform != playerTransform && hitE.collider.CompareTag("Moveable"))
         {
-            SetUI(highlightColor, "E: Взять | R: Толкнуть");
+            SetUI(highlightColor, "F: Взять | R: Толкнуть");
             return;
         }
 
