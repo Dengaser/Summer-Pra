@@ -7,9 +7,11 @@ public class Telekinesis : MonoBehaviour
     public AudioSource AudioSource;
     public AudioClip pickup;
     public AudioClip drop;
+    public AudioClip push;
 
     [Header("Настройки дистанции")]
     public float distance = 5f;
+    public float pushDistance = 8f;
    
 
     [Header("Ссылка на игрока")]
@@ -27,6 +29,7 @@ public class Telekinesis : MonoBehaviour
 
     [Header("Настройки телекинеза")]
     public float throwForce = 15f;
+    public float pushForce = 25f;
 
     [Header("Настройки луча от игрока")]
     public float eyeHeight = 0.5f;
@@ -55,6 +58,11 @@ public class Telekinesis : MonoBehaviour
             if (_heldObject == null) TryPickUp();
             else DropObject();
         }
+
+        if (Input.GetKeyDown(KeyCode.R) && _heldObject == null)
+        {
+            TryPush();
+        }
     }
 
     private void TryPickUp()
@@ -62,15 +70,8 @@ public class Telekinesis : MonoBehaviour
         if (playerTransform == null) return;
 
         RaycastHit hit;
-        Vector3 rayDirection = playerTransform.forward;
-        rayDirection.y = 0;
-        rayDirection.Normalize();
-        float spawnOffset = 0.6f;
-        Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight + rayDirection * spawnOffset;
-
-        float castDistance = Mathf.Max(0.1f, distance - spawnOffset);
-
-        if (Physics.BoxCast(rayStartPoint, BoxHalfExtents, rayDirection, out hit, playerTransform.rotation, distance))
+      
+        if (CastBox(distance,out hit))
         {
             if (hit.collider.transform != playerTransform && hit.collider.CompareTag("Moveable"))
             {
@@ -79,6 +80,35 @@ public class Telekinesis : MonoBehaviour
         }
     }
 
+    private void TryPush()
+    {
+        if(playerTransform == null) return;
+        RaycastHit hit;
+        if(CastBox(pushDistance,out hit))
+        {
+            if(hit.collider.transform != playerTransform && hit.collider.CompareTag("Moveable") || hit.collider.CompareTag("Pushable"))
+            {
+                PushObject(hit.collider.gameObject);
+            }
+        }
+    }
+
+    private void PushObject(GameObject obj)
+    {
+        Rigidbody rb = obj.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            Vector3 pushDirection = playerTransform != null ? playerTransform.forward : playerCamera.transform.forward;
+            pushDirection.y += 0.1f;
+            pushDirection.Normalize();
+
+            rb.AddForce(pushDirection*pushForce, ForceMode.Impulse);
+
+            if(AudioSource != null) AudioSource.PlayOneShot(push);
+
+
+        }
+    }
     private void PickUpObject(GameObject obj)
     {
         _heldObject = obj;
@@ -124,31 +154,43 @@ public class Telekinesis : MonoBehaviour
         if (AudioSource != null && drop != null) AudioSource.PlayOneShot(drop);
     }
 
+    private bool CastBox(float customDistance, out RaycastHit hit)
+    {
+        Vector3 rayDirection = playerTransform.forward;
+        rayDirection.y = 0;
+        rayDirection.Normalize();
+        float spawnOffset = 0.6f;
+        Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight + rayDirection * spawnOffset;
+        float castDistance = Mathf.Max(0.1f, customDistance - spawnOffset);
+
+        return Physics.BoxCast(rayStartPoint, BoxHalfExtents, rayDirection, out hit, playerTransform.rotation, distance);
+
+    }
     private void UpdateUI()
     {
         if (cursorImage == null || hintText == null || playerTransform == null) return;
 
         if (_heldObject != null)
         {
-            SetUI(highlightColor, "E: Толкнуть объект");
+            SetUI(highlightColor, "E: Положить объект");
             return;
         }
 
-        RaycastHit hit;
-        Vector3 rayDirection = playerTransform.forward;
-        rayDirection.y = 0;
-        rayDirection.Normalize();
-
-       
-        float spawnOffset = 0.6f;
-        Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight + rayDirection * spawnOffset;
-        float castDistance = Mathf.Max(0.1f, distance - spawnOffset);
-
-        if (Physics.BoxCast(rayStartPoint, BoxHalfExtents, rayDirection, out hit, playerTransform.rotation, castDistance))
+        
+        RaycastHit hitE;
+        if (CastBox(distance, out hitE) && hitE.collider.transform != playerTransform && hitE.collider.CompareTag("Moveable"))
         {
-            if (hit.collider.transform != playerTransform && hit.collider.CompareTag("Moveable"))
+            SetUI(highlightColor, "E: Взять | R: Толкнуть");
+            return;
+        }
+
+        
+        RaycastHit hitR;
+        if (CastBox(pushDistance, out hitR) && hitR.collider.transform != playerTransform)
+        {
+            if (hitR.collider.CompareTag("Moveable") || hitR.collider.CompareTag("Pushable"))
             {
-                SetUI(highlightColor, "E: Захватить телекинезом");
+                SetUI(highlightColor, "R: Толкнуть");
                 return;
             }
         }

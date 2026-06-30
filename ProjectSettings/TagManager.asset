@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Moveable
+  - Pushable
   layers:
   - Default
   - TransparentFX
