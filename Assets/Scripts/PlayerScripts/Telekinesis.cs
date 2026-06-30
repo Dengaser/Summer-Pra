@@ -31,7 +31,10 @@ public class Telekinesis : MonoBehaviour
     [Header("Настройки луча от игрока")]
     public float eyeHeight = 0.5f;
     private GameObject _heldObject;
+    public float boxWidth = 1f;
+    public float boxHeight = 2f;
 
+    private Vector3 BoxHalfExtents => new Vector3(boxWidth / 2f, boxHeight / 2f, 0.1f);
     void Update()
     {
         if (playerCamera == null) playerCamera = Camera.main;
@@ -40,11 +43,7 @@ public class Telekinesis : MonoBehaviour
         {
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         }
-        if (playerTransform != null)
-        {
-            Debug.DrawRay(playerTransform.position + Vector3.up * eyeHeight, playerTransform.forward * distance, Color.red);
-        }
-
+       
         HandleInput();
         UpdateUI();
     }
@@ -63,13 +62,17 @@ public class Telekinesis : MonoBehaviour
         if (playerTransform == null) return;
 
         RaycastHit hit;
-        Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight;
         Vector3 rayDirection = playerTransform.forward;
+        rayDirection.y = 0;
+        rayDirection.Normalize();
+        float spawnOffset = 0.6f;
+        Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight + rayDirection * spawnOffset;
 
- 
-        if (Physics.Raycast(rayStartPoint, rayDirection, out hit, distance))
+        float castDistance = Mathf.Max(0.1f, distance - spawnOffset);
+
+        if (Physics.BoxCast(rayStartPoint, BoxHalfExtents, rayDirection, out hit, playerTransform.rotation, distance))
         {
-            if (hit.collider.CompareTag("Moveable"))
+            if (hit.collider.transform != playerTransform && hit.collider.CompareTag("Moveable"))
             {
                 PickUpObject(hit.collider.gameObject);
             }
@@ -132,13 +135,18 @@ public class Telekinesis : MonoBehaviour
         }
 
         RaycastHit hit;
-     
-        Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight;
         Vector3 rayDirection = playerTransform.forward;
+        rayDirection.y = 0;
+        rayDirection.Normalize();
 
-        if (Physics.Raycast(rayStartPoint, rayDirection, out hit, distance))
+       
+        float spawnOffset = 0.6f;
+        Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight + rayDirection * spawnOffset;
+        float castDistance = Mathf.Max(0.1f, distance - spawnOffset);
+
+        if (Physics.BoxCast(rayStartPoint, BoxHalfExtents, rayDirection, out hit, playerTransform.rotation, castDistance))
         {
-            if (hit.collider.CompareTag("Moveable"))
+            if (hit.collider.transform != playerTransform && hit.collider.CompareTag("Moveable"))
             {
                 SetUI(highlightColor, "E: Захватить телекинезом");
                 return;
@@ -154,5 +162,30 @@ public class Telekinesis : MonoBehaviour
         cursorImage.color = c;
         hintText.text = t;
         hintText.gameObject.SetActive(true);
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        if (playerTransform == null) return;
+
+        // Определяем точку старта луча
+        Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight;
+        Vector3 rayDirection = playerTransform.forward;
+        rayDirection.y = 0;
+        rayDirection.Normalize();
+
+        // Центр коробки находится на половине дистанции луча впереди игрока
+        Vector3 boxCenter = rayStartPoint + rayDirection * (distance / 2f);
+
+        // Устанавливаем матрицу Gizmos, чтобы коробка крутилась вслед за персонажем
+        Gizmos.matrix = Matrix4x4.TRS(boxCenter, playerTransform.rotation, Vector3.one);
+
+        // Рисуем объемную коробку захвата (размеры: ширина, высота, длина луча)
+        Gizmos.color = new Color(1f, 0.92f, 0.016f, 0.3f); // Полупрозрачный желтый
+        Gizmos.DrawCube(Vector3.zero, new Vector3(boxWidth, boxHeight, distance));
+
+        Gizmos.color = Color.yellow; // Контур коробки
+        Gizmos.DrawWireCube(Vector3.zero, new Vector3(boxWidth, boxHeight, distance));
     }
 }

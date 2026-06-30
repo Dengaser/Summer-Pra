@@ -5,15 +5,19 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Settings")]
     public float Speed = 7f;
+    public float rotationSpeed = 10f;
     public float Gravity = -19.81f;
     public float JumpHeight = 2f;
 
     private CharacterController controller;
+    private Transform cameraTransfom;
     private float verticalVelocity;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
+
+        if (Camera.main != null) { cameraTransfom = Camera.main.transform; } 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -23,9 +27,26 @@ public class PlayerController : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        Vector3 move = transform.forward * verticalInput + transform.right * horizontalInput;
+        Vector3 inputDirection = new Vector3(horizontalInput, 0f, verticalInput);
+        Vector3 move = Vector3.zero;
 
-        
+        if(inputDirection.magnitude > 0.1f && cameraTransfom != null)
+        {
+            Vector3 camForward = cameraTransfom.forward;
+            Vector3 camRight = cameraTransfom.right;
+            camForward.y = 0f;
+            camRight.y = 0f;
+            camForward.Normalize();
+            camRight.Normalize();
+
+            move = camForward * verticalInput + camRight * horizontalInput; 
+            move.Normalize();
+
+            Quaternion targetRotation = Quaternion.LookRotation(move);
+            transform.rotation = Quaternion.Slerp(transform.rotation,targetRotation, rotationSpeed* Time.deltaTime);
+        }
+
+
         if (controller.isGrounded)
         {
             if (verticalVelocity < 0) verticalVelocity = -2f;
@@ -78,11 +99,9 @@ public class PlayerController : MonoBehaviour
     
     public void ResetMovement()
     {
-        if (controller != null)
-        {
+        
             verticalVelocity = 0; 
-            controller.enabled = false;
-            controller.enabled = true;
-        }
+           
+       
     }
 }
