@@ -37,6 +37,8 @@ public class PlayerViewHelper : MonoBehaviour
 
     }
 
+    
+
 
 
     private void HandleInput()
@@ -44,6 +46,10 @@ public class PlayerViewHelper : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             TryUsing();
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            TryChangePosition();
         }
 
     }
@@ -67,7 +73,26 @@ public class PlayerViewHelper : MonoBehaviour
     }
 
 
-   
+    private void TryChangePosition()
+    {
+        Debug.Log("Нажата R");
+        if (playerTransform == null) return;
+
+        RaycastHit hit;
+        if (Cast(distance, out hit))
+        {
+            Debug.Log("Попали в: " + hit.collider.name);
+
+            // Ищем универсальный скрипт взаимодействия
+            InteractableObject interactable = hit.collider.GetComponent<InteractableObject>();
+
+            if (interactable != null)
+            {
+                // Вызываем взаимодействие, а объект сам решит, что делать
+                interactable.OnInteract();
+            }
+        }
+    }
 
 
 

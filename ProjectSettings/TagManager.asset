@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Moveable
   - Pushable
+  - Useable
   layers:
   - Default
   - TransparentFX
