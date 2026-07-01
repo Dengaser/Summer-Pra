@@ -9,6 +9,11 @@ public class PlayerController : MonoBehaviour
     public float Gravity = -19.81f;
     public float JumpHeight = 2f;
 
+    [Header("Настройка лестницы")]
+    public float climbSpeed = 4f;
+    private bool isClimbing = false;
+    private Vector3 ladderForward;
+
     private CharacterController controller;
     private Transform cameraTransfom;
     private float verticalVelocity;
@@ -17,12 +22,25 @@ public class PlayerController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
 
-        if (Camera.main != null) { cameraTransfom = Camera.main.transform; } 
+        if (Camera.main != null) { cameraTransfom = Camera.main.transform; }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     void Update()
+    {
+        if (isClimbing)
+        {
+            Debug.Log("СЕЙЧАС ДЕЙСТВУЕТ РЕЖИМ КАРАБКАНЬЯ!");
+            HandleClimbing();
+        }
+        else
+        {
+            HandleNormalMovement();
+        }
+    }
+
+    private void HandleNormalMovement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
@@ -30,7 +48,7 @@ public class PlayerController : MonoBehaviour
         Vector3 inputDirection = new Vector3(horizontalInput, 0f, verticalInput);
         Vector3 move = Vector3.zero;
 
-        if(inputDirection.magnitude > 0.1f && cameraTransfom != null)
+        if (inputDirection.magnitude > 0.1f && cameraTransfom != null)
         {
             Vector3 camForward = cameraTransfom.forward;
             Vector3 camRight = cameraTransfom.right;
@@ -39,13 +57,12 @@ public class PlayerController : MonoBehaviour
             camForward.Normalize();
             camRight.Normalize();
 
-            move = camForward * verticalInput + camRight * horizontalInput; 
+            move = camForward * verticalInput + camRight * horizontalInput;
             move.Normalize();
 
             Quaternion targetRotation = Quaternion.LookRotation(move);
-            transform.rotation = Quaternion.Slerp(transform.rotation,targetRotation, rotationSpeed* Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
-
 
         if (controller.isGrounded)
         {
@@ -58,7 +75,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            
             verticalVelocity += Gravity * Time.deltaTime;
         }
 
@@ -68,7 +84,65 @@ public class PlayerController : MonoBehaviour
         controller.Move(finalMove * Time.deltaTime);
     }
 
-     
+    private void HandleClimbing()
+    {
+        float verticalInput = Input.GetAxis("Vertical");
+
+       
+        Vector3 climbDirection = new Vector3(0f, verticalInput, 0f);
+        controller.Move(climbDirection * climbSpeed * Time.deltaTime);
+
+        
+        if (Input.GetButtonDown("Jump"))
+        {
+            Debug.Log("Игрок спрыгнул с лестницы!");
+
+          
+            Vector3 pushDirection = ladderForward; 
+            ToggleClimbing(false, Vector3.zero);
+
+            
+            verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+
+            
+            controller.Move((pushDirection * 2f + Vector3.up * verticalVelocity) * Time.deltaTime);
+        }
+
+        
+        if (verticalInput < 0 && controller.isGrounded)
+        {
+            ToggleClimbing(false, Vector3.zero);
+        }
+    }
+
+    public void ToggleClimbing(bool enable, Vector3 ladderForwardDirection)
+    {
+        isClimbing = enable;
+
+        if (isClimbing)
+        {
+            verticalVelocity = 0f;
+            ladderForward = ladderForwardDirection;
+
+            if (ladderForward != Vector3.zero)
+            {
+                // Поворачиваем игрока лицом к лестнице
+                Vector3 lookDir = -ladderForward;
+                lookDir.y = 0f;
+
+                if (lookDir != Vector3.zero)
+                {
+                    transform.rotation = Quaternion.LookRotation(lookDir);
+                }
+
+                // Мягко позиционируем игрока, отключая коллизию на 1 кадр
+                controller.enabled = false;
+                // Чуть-чуть сдвигаем к центру куба для стабильности
+                transform.position += ladderForward * 0.1f;
+                controller.enabled = true;
+            }
+        }
+    }
 
     public void OnEnable()
     {
@@ -94,14 +168,5 @@ public class PlayerController : MonoBehaviour
         if (controller == null) controller = GetComponent<CharacterController>();
         controller.enabled = active;
         this.enabled = active;
-    }
-
-    
-    public void ResetMovement()
-    {
-        
-            verticalVelocity = 0; 
-           
-       
     }
 }
