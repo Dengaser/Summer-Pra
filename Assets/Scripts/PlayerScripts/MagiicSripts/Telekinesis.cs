@@ -168,34 +168,66 @@ public class Telekinesis : MonoBehaviour
     }
     private void UpdateUI()
     {
-        if (cursorImage == null || hintText == null || playerTransform == null) return;
+        // Безопасная проверка на null
+        if (hintText == null || playerTransform == null) return;
 
+        // 1. Если мы уже держим объект — показываем подсказку телекинеза
         if (_heldObject != null)
         {
-            SetUI(highlightColor, "F: Положить объект");
+            if (cursorImage != null) cursorImage.color = highlightColor;
+            hintText.text = "F: Положить объект";
+            hintText.gameObject.SetActive(true);
             return;
         }
 
-        
-        RaycastHit hitE;
-        if (CastBox(distance, out hitE) && hitE.collider.transform != playerTransform && hitE.collider.CompareTag("Moveable"))
+        RaycastHit hit;
+        // 2. Стреляем нашей коробкой вперед
+        if (CastBox(pushDistance, out hit))
         {
-            SetUI(highlightColor, "F: Взять | R: Толкнуть");
-            return;
-        }
-
-        
-        RaycastHit hitR;
-        if (CastBox(pushDistance, out hitR) && hitR.collider.transform != playerTransform)
-        {
-            if (hitR.collider.CompareTag("Moveable") || hitR.collider.CompareTag("Pushable"))
+            // Проверяем, что это не сам игрок
+            if (hit.collider.transform != playerTransform)
             {
-                SetUI(highlightColor, "R: Толкнуть");
-                return;
+                // --- ПРОВЕРКА НА ЗОМБИ ---
+                // Проверяем тег Enemy или наличие компонента здоровья
+                bool isZombie = hit.collider.CompareTag("Enemy") || hit.collider.GetComponent<HealthUniversal>() != null;
+
+                if (isZombie)
+                {
+                    if (cursorImage != null) cursorImage.color = highlightColor;
+
+                    // Берем кнопку атаки из наследника, если нужно, 
+                    // но так как мы в базовом классе, напишем просто ЛКМ (или подставь свою)
+                    hintText.text = "ЛКМ: Ударить зомби";
+                    hintText.gameObject.SetActive(true);
+                    return; // Успешно нашли зомби, выходим
+                }
+
+
+                // --- ПРОВЕРКА НА ПРЕДМЕТЫ ТЕЛЕКИНЕЗА ---
+                bool isMoveable = hit.collider.CompareTag("Moveable");
+                bool isPushable = hit.collider.CompareTag("Pushable");
+
+                if (isMoveable || isPushable)
+                {
+                    if (cursorImage != null) cursorImage.color = highlightColor;
+
+                    if (isMoveable && hit.distance <= distance)
+                    {
+                        hintText.text = "F: Взять | R: Толкнуть";
+                    }
+                    else
+                    {
+                        hintText.text = "R: Толкнуть";
+                    }
+
+                    hintText.gameObject.SetActive(true);
+                    return; // Успешно нашли предмет, выходим
+                }
             }
         }
 
-        cursorImage.color = baseColor;
+        // 3. Если перед нами пустота или стена без нужных тегов — выключаем текст
+        if (cursorImage != null) cursorImage.color = baseColor;
         hintText.gameObject.SetActive(false);
     }
 
