@@ -7,7 +7,8 @@ public class InteractableObject : MonoBehaviour
         Door,
         Button,
         Board,
-        PuzzleNode // <-- ДОБАВИЛИ: Элемент головоломки-цепи
+        PuzzleNode,
+            Lever// <-- ДОБАВИЛИ: Элемент головоломки-цепи
     }
 
     [Header("Выберите тип этого предмета:")]
@@ -46,6 +47,10 @@ public class InteractableObject : MonoBehaviour
             case ObjectType.PuzzleNode: // <-- ДОБАВИЛИ: Вызов логики поворота трубы/цепи
                 LogicForPuzzleNode();
                 break;
+
+            case ObjectType.Lever:
+                LogicForLever();
+                break;
         }
     }
 
@@ -67,6 +72,15 @@ public class InteractableObject : MonoBehaviour
         if (pipeNode != null)
         {
             pipeNode.RotateNode();
+        }
+    }
+    private void LogicForLever()
+    {
+        // Ищем скрипт рычага на этом же объекте и активируем его
+        LeverController lever = GetComponent<LeverController>();
+        if (lever != null)
+        {
+            lever.PullLever();
         }
     }
 }

@@ -3,6 +3,9 @@ using UnityEngine.Events;
 
 public class PuzzleManager : MonoBehaviour
 {
+
+    [Header("Ссылка на платформу-замыкатель")]
+    public PlatformController requiredPlatform;
     // Вспомогательный класс для настройки связи "Труба -> Нужный Угол"
     [System.Serializable]
     public struct NodeConnectionCondition
@@ -72,6 +75,12 @@ public class PuzzleManager : MonoBehaviour
     {
         if (isFinalSolved || finalConditions == null || finalConditions.Length == 0) return;
 
+        // НОВАЯ ПРОВЕРКА: Если платформа задана и она НЕ опущена — прерываем логику
+        if (requiredPlatform != null && !requiredPlatform.IsPlatformDown())
+        {
+            return;
+        }
+
         bool allCorrect = true;
         foreach (var condition in finalConditions)
         {
@@ -85,7 +94,7 @@ public class PuzzleManager : MonoBehaviour
         if (allCorrect)
         {
             isFinalSolved = true;
-            Debug.Log("<color=green>Головоломка полностью решена!</color>");
+            Debug.Log("<color=green>Головоломка полностью решена! Дверь открывается.</color>");
             onFinalPuzzleSolved?.Invoke();
             DisablePuzzleInteraction();
         }
