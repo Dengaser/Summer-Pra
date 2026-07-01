@@ -38,7 +38,7 @@ public class Telekinesis : MonoBehaviour
     public float boxHeight = 2f;
 
     private Vector3 BoxHalfExtents => new Vector3(boxWidth / 2f, boxHeight / 2f, 0.1f);
-    void Update()
+    protected virtual void Update()
     {
         if (playerCamera == null) playerCamera = Camera.main;
         
@@ -154,7 +154,7 @@ public class Telekinesis : MonoBehaviour
         if (AudioSource != null && drop != null) AudioSource.PlayOneShot(drop);
     }
 
-    private bool CastBox(float customDistance, out RaycastHit hit)
+    protected virtual bool CastBox(float customDistance, out RaycastHit hit)
     {
         Vector3 rayDirection = playerTransform.forward;
         rayDirection.y = 0;
