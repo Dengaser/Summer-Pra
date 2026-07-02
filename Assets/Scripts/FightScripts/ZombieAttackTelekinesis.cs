@@ -45,7 +45,7 @@ public class ZombieAttackTelekinesis : Telekinesis
                 NavMeshAgent navMeshAgent = zombie.GetComponent<NavMeshAgent>();
                 if(navMeshAgent != null)
                 {
-                    navMeshAgent.velocity = rayDirection * zombiePushForce;
+                    navMeshAgent.velocity = -rayDirection * zombiePushForce;
                 }
                 else if (rb != null)
                 {
