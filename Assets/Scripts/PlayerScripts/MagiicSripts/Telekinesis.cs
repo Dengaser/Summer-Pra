@@ -18,10 +18,8 @@ public class Telekinesis : MonoBehaviour
     public Transform playerTransform; 
 
     [Header("Интерфейс")]
-    public Image cursorImage;
     public TextMeshProUGUI hintText;
-    public Color baseColor = Color.white;
-    public Color highlightColor = Color.green; 
+   
 
     [Header("Точки удержания")]
     public Transform itemHoldParent;
@@ -174,7 +172,7 @@ public class Telekinesis : MonoBehaviour
         // 1. Если мы уже держим объект — показываем подсказку телекинеза
         if (_heldObject != null)
         {
-            if (cursorImage != null) cursorImage.color = highlightColor;
+            
             hintText.text = "F: Положить объект";
             hintText.gameObject.SetActive(true);
             return;
@@ -193,10 +191,8 @@ public class Telekinesis : MonoBehaviour
 
                 if (isZombie)
                 {
-                    if (cursorImage != null) cursorImage.color = highlightColor;
-
-                    // Берем кнопку атаки из наследника, если нужно, 
-                    // но так как мы в базовом классе, напишем просто ЛКМ (или подставь свою)
+                    
+               
                     hintText.text = "ЛКМ: Ударить зомби";
                     hintText.gameObject.SetActive(true);
                     return; // Успешно нашли зомби, выходим
@@ -209,7 +205,7 @@ public class Telekinesis : MonoBehaviour
 
                 if (isMoveable || isPushable)
                 {
-                    if (cursorImage != null) cursorImage.color = highlightColor;
+                   
 
                     if (isMoveable && hit.distance <= distance)
                     {
@@ -227,13 +223,13 @@ public class Telekinesis : MonoBehaviour
         }
 
         // 3. Если перед нами пустота или стена без нужных тегов — выключаем текст
-        if (cursorImage != null) cursorImage.color = baseColor;
+        
         hintText.gameObject.SetActive(false);
     }
 
-    private void SetUI(Color c, string t)
+    private void SetUI(string t)
     {
-        cursorImage.color = c;
+        
         hintText.text = t;
         hintText.gameObject.SetActive(true);
     }
