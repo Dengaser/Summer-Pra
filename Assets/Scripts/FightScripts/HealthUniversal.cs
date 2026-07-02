@@ -38,7 +38,17 @@ public class HealthUniversal : MonoBehaviour
     {
         
             Debug.Log("смерть");
+        if (gameObject.CompareTag("Enemy"))
+        {
             Destroy(gameObject);
+        }
+        else
+        {
+            return;
+        }
+            
+
+            
         
     }
 }
