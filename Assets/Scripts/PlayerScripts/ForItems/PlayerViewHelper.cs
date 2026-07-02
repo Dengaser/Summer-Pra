@@ -47,10 +47,10 @@ public class PlayerViewHelper : MonoBehaviour
         {
             TryUsing();
         }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            TryChangePosition();
-        }
+        //if (Input.GetKeyDown(KeyCode.R))
+        //{
+        //    TryChangePosition();
+        //}
 
     }
 

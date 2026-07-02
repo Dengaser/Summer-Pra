@@ -1,67 +1,67 @@
 using UnityEngine;
-using UnityEngine.Events;
 
 public class BoxPlacementTrigger : MonoBehaviour
 {
-    [Header("Ссылки на отверстия (Слоты)")]
+    [Header("Ссылки на 3 отверстия")]
     [SerializeField] private SlotZone[] slots;
 
-    [Header("Что произойдет при успехе")]
-    [SerializeField] private GameObject objectToActivate;
-    [SerializeField] private ChapterEndController chapterEndController; // <-- ДОБАВИЛИ: Ссылка на скрипт финала главы
-    [SerializeField] private UnityEvent onPuzzleComplete;
-
-    [Header("Если условия не выполнены")]
-    [SerializeField] private UnityEvent onActivationFailed;
+    [Header("Ссылка на скрипт финала главы")]
+    [SerializeField] private ChapterEndController chapterEndController;
 
     private bool isSolved = false;
 
     public void TryActivate()
     {
-        if (isSolved) return;
+        Debug.Log($"<color=yellow>[BoxPlacementTrigger]</color> Вызван метод TryActivate на объекте {gameObject.name}. Начинаем проверку...");
+
+        if (isSolved)
+        {
+            Debug.Log("[BoxPlacementTrigger] Головоломка уже была решена ранее.");
+            return;
+        }
 
         if (CheckAllSlots())
-            ActivateTarget();
+        {
+            isSolved = true;
+            Debug.Log("<color=cyan>[BoxPlacementTrigger] УСПЕХ!</color> Все 3 ящика на местах. Запускаем потемнение экрана.");
+
+            if (chapterEndController != null)
+            {
+                chapterEndController.TriggerChapterEnd();
+            }
+            else
+            {
+                Debug.LogError("[BoxPlacementTrigger] Не назначена ссылка на ChapterEndController в инспекторе рычага!");
+            }
+        }
         else
-            OnFailed();
+        {
+            Debug.Log("<color=orange>[BoxPlacementTrigger] ОТКАЗ:</color> Не все отверстия заполнены ящиками.");
+        }
     }
 
     private bool CheckAllSlots()
     {
-        if (slots == null || slots.Length == 0) return false;
-
-        foreach (SlotZone slot in slots)
+        if (slots == null || slots.Length == 0)
         {
-            if (slot == null || !slot.IsOccupied)
+            Debug.LogError("[BoxPlacementTrigger] Массив Slots пуст! Перетащите отверстия в инспекторе рычага.");
+            return false;
+        }
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] == null)
             {
+                Debug.LogError($"[BoxPlacementTrigger] В слоте №{i} пустая ссылка (Missing/Null)!");
+                return false;
+            }
+
+            if (!slots[i].IsOccupied)
+            {
+                Debug.Log($"[BoxPlacementTrigger] Отверстие {slots[i].gameObject.name} на данный момент ПУСТОЕ.");
                 return false;
             }
         }
         return true;
-    }
-
-    private void ActivateTarget()
-    {
-        isSolved = true;
-        Debug.Log("Попытка запуска успешна! Все ящики на месте.");
-
-        if (objectToActivate != null)
-        {
-            objectToActivate.SetActive(true);
-        }
-
-        // <-- ДОБАВИЛИ: Запускаем потемнение экрана и надпись через код
-        if (chapterEndController != null)
-        {
-            chapterEndController.TriggerChapterEnd();
-        }
-
-        onPuzzleComplete?.Invoke();
-    }
-
-    private void OnFailed()
-    {
-        Debug.Log("Запуск не удался: Не все ящики находятся в отверстиях!");
-        onActivationFailed?.Invoke();
     }
 }

@@ -3,14 +3,13 @@ using UnityEngine;
 
 public class ChapterEndController : MonoBehaviour
 {
-    [Header("Ссылки на UI")]
-    [SerializeField] private CanvasGroup canvasGroup; // Сюда перетащим наш Canvas
-
-    [Header("Настройки")]
-    [SerializeField] private float fadeDuration = 2.5f; // За сколько секунд экран полностью потемнеет
+    [Header("Перетащите сюда главный Canvas (на котором висит Canvas Group)")]
+    [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] private float fadeDuration = 2.5f; // Время потемнения экрана в секундах
 
     private void Awake()
     {
+        // При старте игры принудительно делаем интерфейс невидимым и прозрачным для кликов
         if (canvasGroup != null)
         {
             canvasGroup.alpha = 0f;
@@ -19,35 +18,31 @@ public class ChapterEndController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Метод для запуска финала главы
-    /// </summary>
     public void TriggerChapterEnd()
     {
-        if (canvasGroup == null) return;
+        if (canvasGroup == null)
+        {
+            Debug.LogError("[ChapterEndController] Ссылка на CanvasGroup не указана!");
+            return;
+        }
 
-        StopAllCoroutines();
         StartCoroutine(FadeInRoutine());
     }
 
     private IEnumerator FadeInRoutine()
     {
-        Debug.Log("Финал главы: Экран начинает темнеть через UI и Код...");
-
-        // Блокируем клики мыши, чтобы игрок больше не мог взаимодействовать с миром
+        Debug.Log("[ChapterEndController] Корутина плавного угасания экрана запущена успешно.");
         canvasGroup.blocksRaycasts = true;
-
         float currentTime = 0f;
-        float startAlpha = canvasGroup.alpha;
 
         while (currentTime < fadeDuration)
         {
             currentTime += Time.deltaTime;
-            // Плавно увеличиваем прозрачность от текущей до 1
-            canvasGroup.alpha = Mathf.Lerp(startAlpha, 1f, currentTime / fadeDuration);
+            canvasGroup.alpha = Mathf.Lerp(0f, 1f, currentTime / fadeDuration);
             yield return null;
         }
 
         canvasGroup.alpha = 1f;
+        Debug.Log("[ChapterEndController] Экран полностью стал черным, текст отображен.");
     }
 }
