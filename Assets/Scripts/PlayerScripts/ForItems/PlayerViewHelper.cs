@@ -109,6 +109,7 @@ public class PlayerViewHelper : MonoBehaviour
                 SetUI("E: Использовать");
                 return;
             }
+            //if (hit.collider.CompareTag(""))
         }
         hintText.gameObject.SetActive(false);
     }

@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class HealthUniversal : MonoBehaviour
 {
     [Header("Настройки значений")]
@@ -38,7 +38,23 @@ public class HealthUniversal : MonoBehaviour
     {
         
             Debug.Log("смерть");
+        if (gameObject.CompareTag("Enemy"))
+        {
             Destroy(gameObject);
+        }
+        else
+        {
+            RestartCurrentScene();
+        }
+            
+
+            
         
+    }
+
+    private void RestartCurrentScene()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
     }
 }
