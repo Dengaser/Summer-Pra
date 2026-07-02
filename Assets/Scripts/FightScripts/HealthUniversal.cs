@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class HealthUniversal : MonoBehaviour
 {
     [Header("Настройки значений")]
@@ -44,11 +44,17 @@ public class HealthUniversal : MonoBehaviour
         }
         else
         {
-            return;
+            RestartCurrentScene();
         }
             
 
             
         
+    }
+
+    private void RestartCurrentScene()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
     }
 }
