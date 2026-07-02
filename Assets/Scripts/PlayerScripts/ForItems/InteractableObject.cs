@@ -8,7 +8,8 @@ public class InteractableObject : MonoBehaviour
         Button,
         Board,
         PuzzleNode,
-            Lever// <-- ДОБАВИЛИ: Элемент головоломки-цепи
+            Lever,
+            BoxPuzzleTrigger// <-- ДОБАВИЛИ: Элемент головоломки-цепи
     }
 
     [Header("Выберите тип этого предмета:")]
@@ -51,6 +52,9 @@ public class InteractableObject : MonoBehaviour
             case ObjectType.Lever:
                 LogicForLever();
                 break;
+            case ObjectType.BoxPuzzleTrigger: // <-- ДОБАВИЛИ: Вызов логики проверки ящиков
+                LogicForBoxPuzzleTrigger();
+                break;
         }
     }
 
@@ -81,6 +85,18 @@ public class InteractableObject : MonoBehaviour
         if (lever != null)
         {
             lever.PullLever();
+        }
+    }
+    private void LogicForBoxPuzzleTrigger()
+    {
+        BoxPlacementTrigger trigger = GetComponent<BoxPlacementTrigger>();
+        if (trigger != null)
+        {
+            trigger.TryActivate();
+        }
+        else
+        {
+            Debug.LogError($"На объекте {gameObject.name} выбран тип BoxPuzzleTrigger, но скрипт BoxPlacementTrigger не найден!");
         }
     }
 }
