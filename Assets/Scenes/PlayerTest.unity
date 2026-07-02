@@ -644,6 +644,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 237da183e3948fa43b5669502b252954, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
+  collisionLayers:
+    serializedVersion: 2
+    m_Bits: 1
+  collisionRadius: 0.2
+  minDistance: 1
   sensitivity: 2
   maxAngle: 80
   target: {fileID: 154042013}
@@ -1486,7 +1491,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &844251901
 BoxCollider:
   m_ObjectHideFlags: 0

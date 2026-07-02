@@ -4,6 +4,11 @@ using UnityEngine.InputSystem;
 public class CameraController : MonoBehaviour
 {
 
+    [Header("Collision Settings")]
+    public LayerMask collisionLayers; // Слой стен и окружения, сквозь которые нельзя проходить
+    public float collisionRadius = 0.2f; // Радиус сферы коллизии камеры
+    public float minDistance = 1f;
+
     public float sensitivity = 2f;
     public float maxAngle = 80f;
 
@@ -40,7 +45,27 @@ public class CameraController : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(rotationX, rotationY, 0f);
         Vector3 targetPosition = target.position + Vector3.up * targetHeight;
 
-        transform.position = targetPosition - (rotation * Vector3.forward * distance);
+        Vector3 desiredPosition = targetPosition - (rotation * Vector3.forward * distance);
+
+        // 2. Направление от персонажа к идеальной позиции камеры
+        Vector3 rayDirection = desiredPosition - targetPosition;
+        float rayLength = rayDirection.magnitude;
+        rayDirection.Normalize();
+
+        // 3. Пускаем сферу от игрока к камере, чтобы проверить препятствия
+        if (Physics.SphereCast(targetPosition, collisionRadius, rayDirection, out RaycastHit hit, rayLength, collisionLayers))
+        {
+            // Если на пути стена, плавно пододвигаем камеру в точку столкновения (но не ближе minDistance)
+            float currentDistance = Mathf.Clamp(hit.distance, minDistance, distance);
+            transform.position = targetPosition + rayDirection * currentDistance;
+        }
+        else
+        {
+            // Если препятствий нет, ставим камеру в идеальную позицию
+            transform.position = desiredPosition;
+        }
+
+        // Поворот остается прежним
         transform.rotation = rotation;
 
     }
