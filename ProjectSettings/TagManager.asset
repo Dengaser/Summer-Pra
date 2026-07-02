@@ -7,6 +7,8 @@ TagManager:
   - Moveable
   - Pushable
   - Enemy
+  - Useable
+  - Killzone
   layers:
   - Default
   - TransparentFX
