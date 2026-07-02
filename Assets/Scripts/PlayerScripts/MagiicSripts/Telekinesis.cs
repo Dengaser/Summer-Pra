@@ -152,9 +152,9 @@ public class Telekinesis : MonoBehaviour
         if (AudioSource != null && drop != null) AudioSource.PlayOneShot(drop);
     }
 
-    protected bool CastBox(float customDistance, out RaycastHit hit)
+    protected virtual bool CastBox(float customDistance, out RaycastHit hit)
     {
-        Vector3 rayDirection = playerTransform.forward; 
+        Vector3 rayDirection = playerTransform.forward;
         rayDirection.y = 0;
         rayDirection.Normalize();
         float spawnOffset = 0.6f;
