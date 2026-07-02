@@ -304,6 +304,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 6faafb57f94b3ef45b27072e0fd8c327, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 2f246b2c05740a548a10172981018e50, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -426,6 +430,7 @@ MonoBehaviour:
   damage: 10
   attackCooldown: 1.5
   attackRange: 5.4
+  maxHealth: 50
   growlSounds:
   - {fileID: 8300000, guid: cfd8a496d6367084e8521dfa18b5a1e8, type: 3}
   - {fileID: 8300000, guid: b4792a4d762c0554cb2e2802d0bcb38a, type: 3}

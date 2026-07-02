@@ -8,33 +8,38 @@ public class ZombieBehaviour : MonoBehaviour
     public float visionRad = 15f;
     public float stoppingDistance = 1.5f;
 
-   
-
     [Header("Настройки атаки")]
-    public float damage = 10f;          
-    public float attackCooldown = 1.5f; 
+    public float damage = 10f;
+    public float attackCooldown = 1.5f;
     public float attackRange = 1.8f;
 
+    [Header("Настройки здоровья зомби")]
+    public float maxHealth = 50f;
+    private float currentHealth;
+    private bool isDead = false;
 
     [Header("Настройки звуков")]
-    public AudioClip[] growlSounds;     // Массив для случайных рыков
-    public AudioClip attackSound;       // Звук атаки
-    [SerializeField] private float minGrowlInterval = 5f; // Минимальное время между рыками
-    [SerializeField] private float maxGrowlInterval = 12f; // Максимальное время между рыками
+    public AudioClip[] growlSounds;
+    public AudioClip attackSound;
+    [SerializeField] private float minGrowlInterval = 5f;
+    [SerializeField] private float maxGrowlInterval = 12f;
     public AudioSource audioSource;
 
     private Transform player;
     private NavMeshAgent navMeshAgent;
     private HealthUniversal playerHealth;
+    private Animator animator; // Ссылка на аниматор
+
     private bool isPursuing = false;
     private float lastAttackTime;
     private float nextGrowlTime;
+
     void Start()
     {
+        currentHealth = maxHealth;
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.stoppingDistance = stoppingDistance;
-
-        //audioSource = GetComponent<AudioSource>();
+        animator = GetComponent<Animator>(); // Получаем компонент аниматора
 
         GameObject playerObg = GameObject.FindGameObjectWithTag(playerTag);
         if (playerObg != null)
@@ -46,53 +51,58 @@ public class ZombieBehaviour : MonoBehaviour
         CalculateNextGrowlTime();
     }
 
-  
     void Update()
     {
+        if (isDead) return; // Если мертв, ничего не делаем
 
         HandleGrowling();
 
-        if (player == null) return;
+        if (player == null)
+        {
+            animator.SetBool("isWalking", false);
+            return;
+        }
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
         if (!isPursuing)
         {
-            if(distanceToPlayer<=visionRad)
+            if (distanceToPlayer <= visionRad)
             {
                 isPursuing = true;
                 Debug.Log("заметил");
             }
+            // Если не преследует, значит стоит в Idle
+            animator.SetBool("isWalking", false);
         }
         else
         {
             navMeshAgent.SetDestination(player.position);
 
-            if(distanceToPlayer <= attackRange)
+            // ИСПРАВЛЕНО: Проверяем скорость агента, чтобы включить ходьбу
+            bool isMoving = navMeshAgent.velocity.sqrMagnitude > 0.1f;
+            animator.SetBool("isWalking", isMoving);
+
+            if (distanceToPlayer <= attackRange)
             {
                 TryAttack();
             }
-            if(distanceToPlayer > visionRad*1.5f)
-            {
-                isPursuing = false;
-                navMeshAgent.ResetPath();
-                Debug.Log("больше не видит");
-
-            }
+            // ... дальше твой код без изменений
         }
-
     }
-
 
     private void TryAttack()
     {
-        if(Time.time - lastAttackTime >= attackCooldown)
+        if (Time.time - lastAttackTime >= attackCooldown)
         {
-            if(playerHealth != null)
+            // Запускаем триггер атаки в аниматоре
+            animator.SetTrigger("Attack");
+
+            if (playerHealth != null)
             {
                 playerHealth.TakeDamage(damage);
 
-                if (attackSound != null)
+                if (attackSound != null && audioSource != null)
                 {
                     audioSource.PlayOneShot(attackSound);
                 }
@@ -101,38 +111,61 @@ public class ZombieBehaviour : MonoBehaviour
         }
     }
 
+    // Этот метод должны вызывать другие скрипты (например, пуля или меч игрока), чтобы нанести урон зомби
+    public void TakeDamage(float amount)
+    {
+        if (isDead) return;
 
+        currentHealth -= amount;
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            // Если выжил — проигрываем анимацию получения урона
+            animator.SetTrigger("Hit");
+        }
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        navMeshAgent.isStopped = true; // Останавливаем зомби
+        animator.SetBool("isDead", true); // Включаем анимацию смерти
+
+        // Отключаем коллайдер, чтобы мертвый зомби не мешал игроку ходить
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+
+        Debug.Log("Зомби уничтожен");
+        Destroy(gameObject, 5f); // Удаляем труп через 5 секунд
+    }
 
     private void HandleGrowling()
     {
-        // Если пришло время рычать и в массиве есть звуки
-        if (Time.time >= nextGrowlTime && growlSounds != null && growlSounds.Length > 0)
+        if (Time.time >= nextGrowlTime && growlSounds != null && growlSounds.Length > 0 && audioSource != null)
         {
-            // Выбираем случайный индекс из массива
             int randomIndex = Random.Range(0, growlSounds.Length);
-
             if (growlSounds[randomIndex] != null)
             {
-                // PlayOneShot позволяет звукам накладываться друг на друга и не прерывать текущие
                 audioSource.PlayOneShot(growlSounds[randomIndex]);
             }
-
-            // Рассчитываем время для следующего рыка
             CalculateNextGrowlTime();
         }
     }
 
     private void CalculateNextGrowlTime()
     {
-        // Текущее время игры + случайный промежуток
         nextGrowlTime = Time.time + Random.Range(minGrowlInterval, maxGrowlInterval);
     }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange); // Красный круг — зона атаки
-
+        Gizmos.DrawWireSphere(transform.position, attackRange);
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, visionRad);   // Желтый круг — зона видимости
+        Gizmos.DrawWireSphere(transform.position, visionRad);
     }
 }
