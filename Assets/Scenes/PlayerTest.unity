@@ -2125,7 +2125,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 317654145809296452, guid: 52c6f183639dec748a133728a70b0716, type: 3}
       propertyPath: damage
-      value: 50
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1354695114924366862, guid: 52c6f183639dec748a133728a70b0716, type: 3}
       propertyPath: m_LocalPosition.x
