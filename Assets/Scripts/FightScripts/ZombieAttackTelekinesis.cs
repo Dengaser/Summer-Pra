@@ -7,12 +7,16 @@ public class ZombieAttackTelekinesis : Telekinesis
     public float zombiePushForce = 40f;   // Сила отталкивания для зомби
     public float zombieDamage = 30f;      // Урон зомби
     public MouseButton zombieButton = MouseButton.Left;
+
+    
     protected override void Update()
     {
         base.Update();
-        if (Input.GetMouseButtonDown((int)zombieButton))
+        if (Input.GetMouseButtonDown((int)zombieButton) || Input.GetKeyDown(KeyCode.R))
         {
+            
             TryAttackZombie();
+
         }
     }
 

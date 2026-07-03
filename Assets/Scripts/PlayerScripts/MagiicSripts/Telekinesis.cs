@@ -1,5 +1,7 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Telekinesis : MonoBehaviour
@@ -34,6 +36,7 @@ public class Telekinesis : MonoBehaviour
     private GameObject _heldObject;
     public float boxWidth = 1f;
     public float boxHeight = 2f;
+    public ParticleSystem telekinesis;
 
     private Vector3 BoxHalfExtents => new Vector3(boxWidth / 2f, boxHeight / 2f, 0.1f);
     protected virtual void Update()
@@ -51,15 +54,35 @@ public class Telekinesis : MonoBehaviour
 
     private void HandleInput()
     {
+        Vector3 rayDirection = playerTransform.forward;
         if (Input.GetKeyDown(KeyCode.F))
         {
-            if (_heldObject == null) TryPickUp();
-            else DropObject();
-        }
+            if (_heldObject == null)
+            {
+                TryPickUp();
+                if (AudioSource != null && pickup != null) AudioSource.PlayOneShot(pickup);
+                if (telekinesis != null)
+                {
+                    // На всякий случай принудительно разворачиваем систему частиц в сторону взгляда игрока
+                    telekinesis.transform.forward = rayDirection;
+                    telekinesis.Play(); // Запуск всплеска частиц
+                }
+            }
 
-        if (Input.GetKeyDown(KeyCode.R) && _heldObject == null)
+            else { DropObject(); if (AudioSource != null && drop != null) AudioSource.PlayOneShot(drop); }
+
+            }
+
+        if ((Input.GetKeyDown(KeyCode.R) || Input.GetMouseButtonDown((int)MouseButton.Left)) && _heldObject == null)
         {
             TryPush();
+            if (AudioSource != null) AudioSource.PlayOneShot(push);
+            if (telekinesis != null)
+            {
+                // На всякий случай принудительно разворачиваем систему частиц в сторону взгляда игрока
+                telekinesis.transform.forward = rayDirection;
+                telekinesis.Play(); // Запуск всплеска частиц
+            }
         }
     }
 
@@ -102,7 +125,7 @@ public class Telekinesis : MonoBehaviour
 
             rb.AddForce(pushDirection*pushForce, ForceMode.Impulse);
 
-            if(AudioSource != null) AudioSource.PlayOneShot(push);
+            
 
 
         }
@@ -122,7 +145,7 @@ public class Telekinesis : MonoBehaviour
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
 
-        if (AudioSource != null && pickup != null) AudioSource.PlayOneShot(pickup);
+        
     }
 
     private void DropObject()
@@ -149,7 +172,7 @@ public class Telekinesis : MonoBehaviour
         }
 
         _heldObject = null;
-        if (AudioSource != null && drop != null) AudioSource.PlayOneShot(drop);
+        
     }
 
     protected virtual bool CastBox(float customDistance, out RaycastHit hit)
