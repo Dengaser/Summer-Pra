@@ -119,6 +119,55 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &58607062
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 58607064}
+  - component: {fileID: 58607063}
+  m_Layer: 0
+  m_Name: Fog
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &58607063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 58607062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae91f367684f0c34cafb4960bb06e50f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneAtmosphereInstaller
+  enableFog: 1
+  fogColor: {r: 0.2, g: 0.23, b: 0.2, a: 1}
+  fogMode: 2
+  fogDensity: 0.06
+  skyboxMaterial: {fileID: 2100000, guid: f7858d382cbdeca42969d8d2245ce890, type: 2}
+--- !u!4 &58607064
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 58607062}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 584.19147, y: 455.68576, z: 550.67847}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &80163882
 GameObject:
   m_ObjectHideFlags: 0
@@ -875,13 +924,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1286829459}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.5268219, y: 0.22218367, z: 0.46214902, w: 0.6778727}
-  m_LocalPosition: {x: 590.3, y: 447.74, z: 533.7}
+  m_LocalRotation: {x: 0.1394846, y: 0.5544828, z: 0.8195097, w: 0.038687285}
+  m_LocalPosition: {x: 604.62, y: 459.35, z: 533.7}
   m_LocalScale: {x: 1437.3535, y: 234.12584, z: 177.60374}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 30.589, y: 66.287, z: 88.818}
+  m_LocalEulerAnglesHint: {x: -63.898, y: 38.108, z: 150.284}
 --- !u!1001 &1378625090
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1212,3 +1261,4 @@ SceneRoots:
   - {fileID: 1517180004}
   - {fileID: 573749007}
   - {fileID: 837422436}
+  - {fileID: 58607064}
