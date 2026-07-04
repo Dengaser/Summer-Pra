@@ -17,10 +17,10 @@ public class ZombieBehaviour : MonoBehaviour
 
 
     [Header("Настройки звуков")]
-    public AudioClip[] growlSounds;     // Массив для случайных рыков
-    public AudioClip attackSound;       // Звук атаки
-    [SerializeField] private float minGrowlInterval = 5f; // Минимальное время между рыками
-    [SerializeField] private float maxGrowlInterval = 12f; // Максимальное время между рыками
+    public AudioClip[] growlSounds;     
+    public AudioClip attackSound;     
+    [SerializeField] private float minGrowlInterval = 5f; 
+    [SerializeField] private float maxGrowlInterval = 12f;
     public AudioSource audioSource;
 
     private Transform player;
@@ -31,10 +31,12 @@ public class ZombieBehaviour : MonoBehaviour
     private float nextGrowlTime;
     void Start()
     {
+
+
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.stoppingDistance = stoppingDistance;
 
-        //audioSource = GetComponent<AudioSource>();
+      
 
         GameObject playerObg = GameObject.FindGameObjectWithTag(playerTag);
         if (playerObg != null)
@@ -105,26 +107,26 @@ public class ZombieBehaviour : MonoBehaviour
 
     private void HandleGrowling()
     {
-        // Если пришло время рычать и в массиве есть звуки
+       
         if (Time.time >= nextGrowlTime && growlSounds != null && growlSounds.Length > 0)
         {
-            // Выбираем случайный индекс из массива
+          
             int randomIndex = Random.Range(0, growlSounds.Length);
 
             if (growlSounds[randomIndex] != null)
             {
-                // PlayOneShot позволяет звукам накладываться друг на друга и не прерывать текущие
+                
                 audioSource.PlayOneShot(growlSounds[randomIndex]);
             }
 
-            // Рассчитываем время для следующего рыка
+          
             CalculateNextGrowlTime();
         }
     }
 
     private void CalculateNextGrowlTime()
     {
-        // Текущее время игры + случайный промежуток
+      
         nextGrowlTime = Time.time + Random.Range(minGrowlInterval, maxGrowlInterval);
     }
     private void OnDrawGizmosSelected()

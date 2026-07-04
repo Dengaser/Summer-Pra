@@ -16,35 +16,41 @@ public class Fire : MonoBehaviour , IIceInteractable
 
     public void OnFreeze()
     {
-        // 1. Останавливаем спавн новых частиц огня
+       
         if (fireParticle != null)
         {
             fireParticle.Stop();
         }
 
-        // 2. Выключаем звук пламени
+       
         if (fireSource != null)
         {
             fireSource.Stop();
         }
 
-        // 3. Отключаем коллайдер, чтобы игрок больше не горел, пока частицы догорают
+        
         if (TryGetComponent(out Collider fireCollider))
         {
             fireCollider.enabled = false;
         }
 
-        // 4. Уничтожаем объект огня. 
-        // Передаем 2.0f (или другое время), чтобы уже вылетевшие частицы красиво исчезли, а не пропали мгновенно
+        
         Destroy(gameObject, 2.0f);
     }
 
 
-   
 
-  
+
+
     void Start()
     {
+        
+        if (fireSource != null && fireClip != null)
+        {
+            fireSource.clip = fireClip; 
+            fireSource.Play();         
+        }
+
         GameObject playerObg = GameObject.FindGameObjectWithTag(playerTag);
         if (playerObg != null)
         {
@@ -52,6 +58,6 @@ public class Fire : MonoBehaviour , IIceInteractable
         }
     }
 
-    
-    
+
+
 }

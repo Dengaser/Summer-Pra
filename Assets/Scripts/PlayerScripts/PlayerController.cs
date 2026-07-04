@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private CharacterController controller;
     private Transform cameraTransfom;
     private float verticalVelocity;
+    private float currentSlopeAngle;
 
     void Start()
     {
@@ -70,21 +71,32 @@ public class PlayerController : MonoBehaviour
 
         if (controller.isGrounded)
         {
-            animator.SetBool("IsGrounded", controller.isGrounded);
-            if (verticalVelocity < 0) verticalVelocity = -2f;
+            animator.SetBool("IsGrounded", controller.isGrounded); 
+    if (verticalVelocity < 0) verticalVelocity = -2f; 
 
-            if (Input.GetButtonDown("Jump"))
+    // Прыгаем только если угол поверхности под ногами не превышает лимит
+        if (currentSlopeAngle <= controller.slopeLimit)
             {
-                verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                if (Input.GetButtonDown("Jump")) 
+        {
+                    verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity); 
 
-                animator.SetTrigger("Jump");
-                animator.SetBool("IsGrounded", false);
-
+            animator.SetTrigger("Jump");
+            animator.SetBool("IsGrounded", false); 
+        }
+            }
+            else
+            {
+                // Склон слишком крутой — плавно сползаем вниз, чтобы не залипать
+                Vector3 slideDirection = new Vector3(0f, Gravity, 0f);
+                move += slideDirection * Time.deltaTime;
             }
         }
         else
         {
-            verticalVelocity += Gravity * Time.deltaTime;
+            verticalVelocity += Gravity * Time.deltaTime; 
+    // В воздухе сбрасываем угол, чтобы приземление рассчитывалось чисто
+        currentSlopeAngle = 0f;
         }
 
         Vector3 finalMove = move * Speed;
@@ -142,7 +154,7 @@ public class PlayerController : MonoBehaviour
 
             if (ladderForward != Vector3.zero)
             {
-                // Поворачиваем игрока лицом к лестнице
+                
                 Vector3 lookDir = -ladderForward;
                 lookDir.y = 0f;
 
@@ -151,15 +163,16 @@ public class PlayerController : MonoBehaviour
                     transform.rotation = Quaternion.LookRotation(lookDir);
                 }
 
-                // Мягко позиционируем игрока, отключая коллизию на 1 кадр
+               
                 controller.enabled = false;
-                // Чуть-чуть сдвигаем к центру куба для стабильности
+              
                 transform.position += ladderForward * 0.1f;
                 controller.enabled = true;
             }
         }
     }
 
+   
     public void OnEnable()
     {
         if (controller != null)
@@ -184,5 +197,21 @@ public class PlayerController : MonoBehaviour
         if (controller == null) controller = GetComponent<CharacterController>();
         controller.enabled = active;
         this.enabled = active;
+    }
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+       
+        if (hit.point.y < transform.position.y + controller.stepOffset)
+        {
+            currentSlopeAngle = Vector3.Angle(hit.normal, Vector3.up);
+        }
+        else if (hit.point.y > transform.position.y + 0.5f)
+        {
+            
+            if (currentSlopeAngle <= controller.slopeLimit)
+            {
+                currentSlopeAngle = Vector3.Angle(hit.normal, Vector3.up);
+            }
+        }
     }
 }

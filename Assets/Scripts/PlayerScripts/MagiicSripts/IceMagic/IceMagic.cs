@@ -24,7 +24,7 @@ public class IceMagic : MonoBehaviour
     [Header("Интерфейс")]
     public TextMeshProUGUI hintText;
     [Header("Настройки луча от игрока")]
-    public float eyeHeight = 0.5f; // Высота, откуда выходит луч (чуть выше пояса)[cite: 1]
+    public float eyeHeight = 0.5f; 
     [Range(0f, 85f)]
     public float dipAngle = 35f;
     public ParticleSystem iceParticle;
@@ -64,15 +64,14 @@ public class IceMagic : MonoBehaviour
     {
         if (playerTransform == null) return;
 
-        // Переменные для хранения результатов попадания
         bool hitWater = CastRayDown(distance, out RaycastHit hit);
         bool hitFire = CastBox(distance, out RaycastHit hit_two);
 
-        // Если никуда не попали — выходим
+        
         if (!hitWater && !hitFire)
             return;
 
-        // Эффекты проигрываем, если магия хоть куда-то попала
+        
         if (iceParticle != null)
         {
             iceParticle.transform.forward = playerTransform.forward;
@@ -82,7 +81,7 @@ public class IceMagic : MonoBehaviour
         if (AudioSource != null && iceSound != null)
             AudioSource.PlayOneShot(iceSound);
 
-        // 1. ПРОВЕРКА ВОДЫ (Луч под ноги)
+        
         if (hitWater && hit.collider.TryGetComponent(out Water water))
         {
             Vector3 forwardXZ = playerTransform.forward;
@@ -98,8 +97,8 @@ public class IceMagic : MonoBehaviour
             }
         }
 
-        // 2. ПРОВЕРКА ОГНЯ (Коробка перед собой)
-        // Используем 'if', а не 'else if', чтобы магия могла одновременно тушить огонь и морозить воду, если они рядом
+       
+       
         if (hitFire && hit_two.collider.transform != playerTransform && hit_two.collider.TryGetComponent(out IIceInteractable target))
         {
             target.OnFreeze();
@@ -110,18 +109,18 @@ public class IceMagic : MonoBehaviour
 
     private bool CastRayDown(float customDistance, out RaycastHit hit)
     {
-        // Берем направление "вперед" игрока и убираем Y, чтобы наклон головы не влиял
+      
         Vector3 forwardXZ = playerTransform.forward;
         forwardXZ.y = 0;
         forwardXZ.Normalize();
 
-        // Считаем стартовую точку (на уровне "глаз" / груди игрока)
+       
         Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight;
 
-        // Наклоняем вектор вперед вниз на заданный угол (dipAngle)
+        
         Vector3 rayDirection = Quaternion.AngleAxis(dipAngle, playerTransform.right) * forwardXZ;
 
-        // Пускаем обычный Raycast, который идеально распознает MeshCollider воды
+        
         return Physics.Raycast(rayStartPoint, rayDirection, out hit, customDistance);
     }
 
@@ -140,16 +139,15 @@ public class IceMagic : MonoBehaviour
 
     private void UpdateUI()
     {
-        if (hintText == null || playerTransform == null) //[cite: 1]
-            return; //[cite: 1]
-
+        if (hintText == null || playerTransform == null) 
+            return; 
         if (CastRayDown(distance, out RaycastHit hit))
         {
-            if (hit.collider.CompareTag("Water")) //[cite: 1]
+            if (hit.collider.CompareTag("Water"))
             {
-                hintText.text = "R|ЛКМ: Заморозить воду "; //[cite: 1]
-                hintText.gameObject.SetActive(true); //[cite: 1]
-                return; //[cite: 1]
+                hintText.text = "R|ЛКМ: Заморозить воду "; 
+                hintText.gameObject.SetActive(true); 
+                return; 
             }
         }
         if (CastBox(distance, out RaycastHit hit_two))
@@ -160,11 +158,19 @@ public class IceMagic : MonoBehaviour
                 hintText.gameObject.SetActive(true); 
                 return; 
             }
+            if (hit_two.collider.CompareTag("Enemy"))
+            {
+                hintText.text = "R|ЛКМ: Заморозить зомби";
+                hintText.gameObject.SetActive(true);
+                return;
+            }
         }
-            
-        
 
-        hintText.gameObject.SetActive(false); //[cite: 1]
+       
+
+
+
+        hintText.gameObject.SetActive(false); 
     }
 
 
