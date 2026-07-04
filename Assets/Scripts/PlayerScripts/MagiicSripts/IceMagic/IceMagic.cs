@@ -28,8 +28,12 @@ public class IceMagic : MonoBehaviour
     [Range(0f, 85f)]
     public float dipAngle = 35f;
     public ParticleSystem iceParticle;
+    public float boxWidth = 1f;
+    public float boxHeight = 2f;
 
-    
+
+    private Vector3 BoxHalfExtents => new Vector3(boxWidth / 2f, boxHeight / 2f, 0.1f);
+
 
 
 
@@ -58,46 +62,47 @@ public class IceMagic : MonoBehaviour
 
     private void CastIce()
     {
-        if (playerTransform == null) return; //
+        if (playerTransform == null) return;
 
-        // Пускаем наклонный луч, чтобы найти ПЕРВУЮ точку на воде (под ногами или чуть впереди)
-        if (!CastRayDown(distance, out RaycastHit hit))
+        // Переменные для хранения результатов попадания
+        bool hitWater = CastRayDown(distance, out RaycastHit hit);
+        bool hitFire = CastBox(distance, out RaycastHit hit_two);
+
+        // Если никуда не попали — выходим
+        if (!hitWater && !hitFire)
             return;
 
-        if (iceParticle != null) 
+        // Эффекты проигрываем, если магия хоть куда-то попала
+        if (iceParticle != null)
         {
-            iceParticle.transform.forward = playerTransform.forward; 
-            iceParticle.Play(); 
+            iceParticle.transform.forward = playerTransform.forward;
+            iceParticle.Play();
         }
 
-        if (AudioSource != null && iceSound != null) 
-            AudioSource.PlayOneShot(iceSound); 
+        if (AudioSource != null && iceSound != null)
+            AudioSource.PlayOneShot(iceSound);
 
-        // Проверяем, что попали именно в воду
-        if (hit.collider.TryGetComponent(out Water water))
+        // 1. ПРОВЕРКА ВОДЫ (Луч под ноги)
+        if (hitWater && hit.collider.TryGetComponent(out Water water))
         {
-            // Получаем направление взгляда игрока на плоскости XZ (чтобы линия не уходила вверх или вниз)
             Vector3 forwardXZ = playerTransform.forward;
             forwardXZ.y = 0;
             forwardXZ.Normalize();
 
-            // Точка первого попадания луча
             Vector3 startPoint = hit.point;
 
-            // Цикл для создания линии из кубиков
             for (int i = 0; i < iceBlocksCount; i++)
             {
-                // Вычисляем позицию для каждого следующего кубика вдоль направления взгляда
                 Vector3 currentPoint = startPoint + (forwardXZ * (i * stepDistance));
-
-                // Вызываем заморозку в этой точке
                 water.FreezeAtPoint(currentPoint);
             }
         }
-        // Если попали во что-то другое с интерфейсом льда (например, огонь)
-        else if (hit.collider.transform != playerTransform && hit.collider.TryGetComponent(out IIceInteractable target))
+
+        // 2. ПРОВЕРКА ОГНЯ (Коробка перед собой)
+        // Используем 'if', а не 'else if', чтобы магия могла одновременно тушить огонь и морозить воду, если они рядом
+        if (hitFire && hit_two.collider.transform != playerTransform && hit_two.collider.TryGetComponent(out IIceInteractable target))
         {
-            target.OnFreeze(); //[cite: 1]
+            target.OnFreeze();
         }
     }
 
@@ -120,6 +125,19 @@ public class IceMagic : MonoBehaviour
         return Physics.Raycast(rayStartPoint, rayDirection, out hit, customDistance);
     }
 
+    private bool CastBox(float customDistance, out RaycastHit hit)
+    {
+        Vector3 rayDirection = playerTransform.forward;
+        rayDirection.y = 0;
+        rayDirection.Normalize();
+        float spawnOffset = 0.6f;
+        Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight + rayDirection * spawnOffset;
+        float castDistance = Mathf.Max(0.1f, customDistance - spawnOffset);
+
+        return Physics.BoxCast(rayStartPoint, BoxHalfExtents, rayDirection, out hit, playerTransform.rotation, castDistance);
+
+    }
+
     private void UpdateUI()
     {
         if (hintText == null || playerTransform == null) //[cite: 1]
@@ -133,14 +151,18 @@ public class IceMagic : MonoBehaviour
                 hintText.gameObject.SetActive(true); //[cite: 1]
                 return; //[cite: 1]
             }
-
-            if (hit.collider.CompareTag("Fire")) //[cite: 1]
+        }
+        if (CastBox(distance, out RaycastHit hit_two))
+        {
+            if (hit_two.collider.CompareTag("Fire")) 
             {
-                hintText.text = "R|ЛКМ: Потушить огонь"; //[cite: 1]
-                hintText.gameObject.SetActive(true); //[cite: 1]
-                return; //[cite: 1]
+                hintText.text = "R|ЛКМ: Потушить огонь"; 
+                hintText.gameObject.SetActive(true); 
+                return; 
             }
         }
+            
+        
 
         hintText.gameObject.SetActive(false); //[cite: 1]
     }
@@ -156,8 +178,30 @@ public class IceMagic : MonoBehaviour
 
         Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight;
         Vector3 rayDirection = Quaternion.AngleAxis(dipAngle, playerTransform.right) * forwardXZ;
+        
 
         Gizmos.color = Color.cyan;
         Gizmos.DrawRay(rayStartPoint, rayDirection * distance);
+
+
+        // Определяем точку старта луча
+        
+        Vector3 rayDirection_two = playerTransform.forward;
+        rayDirection_two.y = 0;
+        rayDirection_two.Normalize();
+
+        // Центр коробки находится на половине дистанции луча впереди игрока
+        Vector3 boxCenter = rayStartPoint + rayDirection_two * (distance / 2f);
+
+        // Устанавливаем матрицу Gizmos, чтобы коробка крутилась вслед за персонажем
+        Gizmos.matrix = Matrix4x4.TRS(boxCenter, playerTransform.rotation, Vector3.one);
+
+        // Рисуем объемную коробку захвата (размеры: ширина, высота, длина луча)
+        Gizmos.color = new Color(1f, 0.92f, 0.016f, 0.3f); // Полупрозрачный желтый
+        Gizmos.DrawCube(Vector3.zero, new Vector3(boxWidth, boxHeight, distance));
+
+        Gizmos.color = Color.yellow; // Контур коробки
+        Gizmos.DrawWireCube(Vector3.zero, new Vector3(boxWidth, boxHeight, distance));
+
     }
 }

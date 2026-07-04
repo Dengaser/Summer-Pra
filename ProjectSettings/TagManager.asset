@@ -11,6 +11,7 @@ TagManager:
   - Killzone
   - Box
   - Water
+  - Fire
   layers:
   - Default
   - TransparentFX
