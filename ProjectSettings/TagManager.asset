@@ -12,6 +12,7 @@ TagManager:
   - Box
   - Water
   - Fire
+  - Burn
   layers:
   - Default
   - TransparentFX
