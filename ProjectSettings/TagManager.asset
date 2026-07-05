@@ -10,6 +10,8 @@ TagManager:
   - Useable
   - Killzone
   - Box
+  - Water
+  - Fire
   layers:
   - Default
   - TransparentFX

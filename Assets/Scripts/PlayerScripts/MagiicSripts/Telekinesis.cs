@@ -1,5 +1,7 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Telekinesis : MonoBehaviour
@@ -34,6 +36,7 @@ public class Telekinesis : MonoBehaviour
     private GameObject _heldObject;
     public float boxWidth = 1f;
     public float boxHeight = 2f;
+    public ParticleSystem telekinesis;
 
     private Vector3 BoxHalfExtents => new Vector3(boxWidth / 2f, boxHeight / 2f, 0.1f);
     protected virtual void Update()
@@ -51,15 +54,35 @@ public class Telekinesis : MonoBehaviour
 
     private void HandleInput()
     {
+        Vector3 rayDirection = playerTransform.forward;
         if (Input.GetKeyDown(KeyCode.F))
         {
-            if (_heldObject == null) TryPickUp();
-            else DropObject();
-        }
+            if (_heldObject == null)
+            {
+                TryPickUp();
+                if (AudioSource != null && pickup != null) AudioSource.PlayOneShot(pickup);
+                if (telekinesis != null)
+                {
+                   
+                    telekinesis.transform.forward = rayDirection;
+                    telekinesis.Play(); 
+                }
+            }
 
-        if (Input.GetKeyDown(KeyCode.R) && _heldObject == null)
+            else { DropObject(); if (AudioSource != null && drop != null) AudioSource.PlayOneShot(drop); }
+
+            }
+
+        if ((Input.GetKeyDown(KeyCode.R) || Input.GetMouseButtonDown((int)MouseButton.Left)) && _heldObject == null)
         {
             TryPush();
+            if (AudioSource != null) AudioSource.PlayOneShot(push);
+            if (telekinesis != null)
+            {
+               
+                telekinesis.transform.forward = rayDirection;
+                telekinesis.Play(); 
+            }
         }
     }
 
@@ -102,7 +125,7 @@ public class Telekinesis : MonoBehaviour
 
             rb.AddForce(pushDirection*pushForce, ForceMode.Impulse);
 
-            if(AudioSource != null) AudioSource.PlayOneShot(push);
+            
 
 
         }
@@ -122,7 +145,7 @@ public class Telekinesis : MonoBehaviour
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
 
-        if (AudioSource != null && pickup != null) AudioSource.PlayOneShot(pickup);
+        
     }
 
     private void DropObject()
@@ -149,7 +172,7 @@ public class Telekinesis : MonoBehaviour
         }
 
         _heldObject = null;
-        if (AudioSource != null && drop != null) AudioSource.PlayOneShot(drop);
+        
     }
 
     protected virtual bool CastBox(float customDistance, out RaycastHit hit)
@@ -166,10 +189,10 @@ public class Telekinesis : MonoBehaviour
     }
     private void UpdateUI()
     {
-        // Безопасная проверка на null
+      
         if (hintText == null || playerTransform == null) return;
 
-        // 1. Если мы уже держим объект — показываем подсказку телекинеза
+       
         if (_heldObject != null)
         {
             
@@ -179,14 +202,13 @@ public class Telekinesis : MonoBehaviour
         }
 
         RaycastHit hit;
-        // 2. Стреляем нашей коробкой вперед
+       
         if (CastBox(pushDistance, out hit))
         {
-            // Проверяем, что это не сам игрок
+            
             if (hit.collider.transform != playerTransform)
             {
-                // --- ПРОВЕРКА НА ЗОМБИ ---
-                // Проверяем тег Enemy или наличие компонента здоровья
+              
                 bool isZombie = hit.collider.CompareTag("Enemy") || hit.collider.GetComponent<HealthUniversal>() != null;
 
                 if (isZombie)
@@ -195,11 +217,11 @@ public class Telekinesis : MonoBehaviour
                
                     hintText.text = "ЛКМ: Ударить зомби";
                     hintText.gameObject.SetActive(true);
-                    return; // Успешно нашли зомби, выходим
+                    return; 
                 }
 
 
-                // --- ПРОВЕРКА НА ПРЕДМЕТЫ ТЕЛЕКИНЕЗА ---
+               
                 bool isMoveable = hit.collider.CompareTag("Moveable");
                 bool isPushable = hit.collider.CompareTag("Pushable");
 
@@ -217,12 +239,12 @@ public class Telekinesis : MonoBehaviour
                     }
 
                     hintText.gameObject.SetActive(true);
-                    return; // Успешно нашли предмет, выходим
+                    return; 
                 }
             }
         }
 
-        // 3. Если перед нами пустота или стена без нужных тегов — выключаем текст
+       
         
         hintText.gameObject.SetActive(false);
     }
