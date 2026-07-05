@@ -8,6 +8,7 @@ public class ZombieBurn : MonoBehaviour, IFireInteractable
     public HealthUniversal zombieHealth;
     public NavMeshAgent navMeshAgent;
     public ParticleSystem fireParticle;
+    private Animator animator;
 
     [Header("Настройки магии")]
     public float damage = 25f;          // Урон от заклинания
@@ -22,6 +23,7 @@ public class ZombieBurn : MonoBehaviour, IFireInteractable
     void Start()
     {
         if (zombieHealth == null) zombieHealth = GetComponent<HealthUniversal>();
+        animator = GetComponent<Animator>();
         if (fireParticle != null && fireParticle.isPlaying)
         {
             fireParticle.Stop();
@@ -48,6 +50,7 @@ public class ZombieBurn : MonoBehaviour, IFireInteractable
             if (zombieHealth != null)
             {
                 zombieHealth.TakeDamage(damage);
+                if (animator != null) animator.SetTrigger("Hit");
             }
         }
 
@@ -78,6 +81,8 @@ public class ZombieBurn : MonoBehaviour, IFireInteractable
             if (zombieHealth != null)
             {
                 zombieHealth.TakeDamage(fireDamage);
+
+                if (animator != null) animator.SetTrigger("Hit");
             }
 
             // Каждую секунду (или с заданным интервалом) пытаемся поджечь соседей

@@ -42,7 +42,7 @@ public class ZombieAttackTelekinesis : Telekinesis
                 Animator zombieAnimator = zombie.GetComponent<Animator>();
                 if (zombieAnimator != null)
                 {
-                    zombieAnimator.SetTrigger("Attack"); // Вместо "Hit" впишите точное имя вашего триггера из Unity
+                    zombieAnimator.SetTrigger("Hit"); // Вместо "Hit" впишите точное имя вашего триггера из Unity
                 }
                 HealthUniversal zombieHealth = zombie.GetComponent<HealthUniversal>();
                 if(zombieHealth != null )
