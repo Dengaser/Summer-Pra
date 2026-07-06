@@ -11,7 +11,8 @@ public class InteractableObject : MonoBehaviour
         PuzzleNode2,
             Lever,
             BoxPuzzleTrigger,
-        ObjectResetter// <-- ДОБАВИЛИ: Элемент головоломки-цепи
+        ObjectResetter,
+            CauldronSpawner// <-- ДОБАВИЛИ: Элемент головоломки-цепи
     }
 
     [Header("Выберите тип этого предмета:")]
@@ -66,6 +67,9 @@ public class InteractableObject : MonoBehaviour
 
             case ObjectType.ObjectResetter: // <-- ДОБАВИЛИ: Вызов новой логики
                 LogicForResetObject();
+                break;
+            case ObjectType.CauldronSpawner: // <-- ДОБАВИЛИ: Вызов логики спавна
+                LogicForCauldronSpawner();
                 break;
         }
     }
@@ -131,6 +135,19 @@ public class InteractableObject : MonoBehaviour
         else
         {
             Debug.LogError($"На объекте {gameObject.name} выбран тип ObjectResetter, но не указана ссылка на Target Returnable Object в инспекторе!");
+        }
+    }
+
+    private void LogicForCauldronSpawner()
+    {
+        CauldronItemSpawner spawner = GetComponent<CauldronItemSpawner>();
+        if (spawner != null)
+        {
+            spawner.SpawnItem();
+        }
+        else
+        {
+            Debug.LogError($"На объекте {gameObject.name} выбран тип CauldronSpawner, но скрипт CauldronItemSpawner не найден!");
         }
     }
 }
