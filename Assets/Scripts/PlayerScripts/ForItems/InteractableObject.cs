@@ -10,7 +10,8 @@ public class InteractableObject : MonoBehaviour
         PuzzleNode,
         PuzzleNode2,
             Lever,
-            BoxPuzzleTrigger// <-- ДОБАВИЛИ: Элемент головоломки-цепи
+            BoxPuzzleTrigger,
+        ObjectResetter// <-- ДОБАВИЛИ: Элемент головоломки-цепи
     }
 
     [Header("Выберите тип этого предмета:")]
@@ -19,6 +20,9 @@ public class InteractableObject : MonoBehaviour
     // Ссылка на компонент вращения (заполняется автоматически, если это PuzzleNode)
     private PuzzlePipeNode pipeNode;
     private PuzzlePipeNode2 pipeNode2;
+
+    [Header("Настройки для возврата объекта (если выбран ObjectResetter):")]
+    [SerializeField] private ReturnableObject targetReturnableObject;
 
     private void Awake()
     {
@@ -58,6 +62,10 @@ public class InteractableObject : MonoBehaviour
                 break;
             case ObjectType.BoxPuzzleTrigger: // <-- ДОБАВИЛИ: Вызов логики проверки ящиков
                 LogicForBoxPuzzleTrigger();
+                break;
+
+            case ObjectType.ObjectResetter: // <-- ДОБАВИЛИ: Вызов новой логики
+                LogicForResetObject();
                 break;
         }
     }
@@ -112,6 +120,17 @@ public class InteractableObject : MonoBehaviour
         else
         {
             Debug.LogError($"На объекте {gameObject.name} выбран тип BoxPuzzleTrigger, но скрипт BoxPlacementTrigger не найден!");
+        }
+    }
+    private void LogicForResetObject()
+    {
+        if (targetReturnableObject != null)
+        {
+            targetReturnableObject.ResetToTargetPosition();
+        }
+        else
+        {
+            Debug.LogError($"На объекте {gameObject.name} выбран тип ObjectResetter, но не указана ссылка на Target Returnable Object в инспекторе!");
         }
     }
 }
