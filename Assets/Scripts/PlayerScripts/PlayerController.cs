@@ -200,18 +200,12 @@ public class PlayerController : MonoBehaviour
     }
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-       
-        if (hit.point.y < transform.position.y + controller.stepOffset)
+        // ѕровер€ем, что точка контакта находитс€ снизу (под ногами)
+        // ≈сли нормаль направлена вверх (y > 0.7), значит это относительно горизонтальна€ опора
+        if (hit.normal.y > 0.1f)
         {
+            // ¬ычисл€ем угол только дл€ поверхностей, на которые можно наступить
             currentSlopeAngle = Vector3.Angle(hit.normal, Vector3.up);
-        }
-        else if (hit.point.y > transform.position.y + 0.5f)
-        {
-            
-            if (currentSlopeAngle <= controller.slopeLimit)
-            {
-                currentSlopeAngle = Vector3.Angle(hit.normal, Vector3.up);
-            }
         }
     }
 }
