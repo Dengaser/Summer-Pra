@@ -11,12 +11,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 91a51e19d7d96944daa7491256024e51
-  - enabled: 0
-    path: Assets/Scenes/First level.unity
-    guid: dbf8b3ea91e100a40aa156c9d5ffef16
   - enabled: 1
     path: Assets/Scenes/DaniilA.unity
     guid: 8649b943956a24c41b12ddb798f779d7
+  - enabled: 1
+    path: Assets/Scenes/Level2.unity
+    guid: 9af9ae2057e44ef45a5023703ffa71c2
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
