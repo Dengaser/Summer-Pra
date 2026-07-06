@@ -39,6 +39,11 @@ public class ZombieAttackTelekinesis : Telekinesis
             if(hit.collider.CompareTag("Enemy") || hit.collider.GetComponent<HealthUniversal>() != null) 
             {
                 GameObject zombie = hit.collider.gameObject;
+                Animator zombieAnimator = zombie.GetComponent<Animator>();
+                if (zombieAnimator != null)
+                {
+                    zombieAnimator.SetTrigger("Hit"); // Вместо "Hit" впишите точное имя вашего триггера из Unity
+                }
                 HealthUniversal zombieHealth = zombie.GetComponent<HealthUniversal>();
                 if(zombieHealth != null )
                 {

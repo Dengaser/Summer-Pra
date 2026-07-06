@@ -8,8 +8,10 @@ public class InteractableObject : MonoBehaviour
         Button,
         Board,
         PuzzleNode,
+        PuzzleNode2,
             Lever,
-            BoxPuzzleTrigger// <-- ДОБАВИЛИ: Элемент головоломки-цепи
+            BoxPuzzleTrigger,
+        ObjectResetter// <-- ДОБАВИЛИ: Элемент головоломки-цепи
     }
 
     [Header("Выберите тип этого предмета:")]
@@ -17,14 +19,20 @@ public class InteractableObject : MonoBehaviour
 
     // Ссылка на компонент вращения (заполняется автоматически, если это PuzzleNode)
     private PuzzlePipeNode pipeNode;
+    private PuzzlePipeNode2 pipeNode2;
+
+    [Header("Настройки для возврата объекта (если выбран ObjectResetter):")]
+    [SerializeField] private ReturnableObject targetReturnableObject;
 
     private void Awake()
     {
         if (typeOfObject == ObjectType.PuzzleNode)
         {
             pipeNode = GetComponent<PuzzlePipeNode>();
+            pipeNode2 = GetComponent<PuzzlePipeNode2>();
         }
     }
+
 
     // --- ЛОГИКА ДЛЯ ДОСКИ ---
     [Header("Настройки для доски (если выбрана Board):")]
@@ -55,6 +63,10 @@ public class InteractableObject : MonoBehaviour
             case ObjectType.BoxPuzzleTrigger: // <-- ДОБАВИЛИ: Вызов логики проверки ящиков
                 LogicForBoxPuzzleTrigger();
                 break;
+
+            case ObjectType.ObjectResetter: // <-- ДОБАВИЛИ: Вызов новой логики
+                LogicForResetObject();
+                break;
         }
     }
 
@@ -73,9 +85,20 @@ public class InteractableObject : MonoBehaviour
     // <-- ДОБАВИЛИ: Метод вращения элемента цепи
     private void LogicForPuzzleNode()
     {
+        // 1. Сначала проверяем, есть ли старый скрипт
         if (pipeNode != null)
         {
             pipeNode.RotateNode();
+        }
+        // 2. Если старого нет, проверяем, есть ли новый
+        else if (pipeNode2 != null)
+        {
+            pipeNode2.RotateNode();
+        }
+        // 3. Если вообще ничего не найдено
+        else
+        {
+            Debug.LogError($"На объекте {gameObject.name} выбран тип PuzzleNode, но ни PuzzlePipeNode, ни PuzzlePipeNode2 не найдены!");
         }
     }
     private void LogicForLever()
@@ -97,6 +120,17 @@ public class InteractableObject : MonoBehaviour
         else
         {
             Debug.LogError($"На объекте {gameObject.name} выбран тип BoxPuzzleTrigger, но скрипт BoxPlacementTrigger не найден!");
+        }
+    }
+    private void LogicForResetObject()
+    {
+        if (targetReturnableObject != null)
+        {
+            targetReturnableObject.ResetToTargetPosition();
+        }
+        else
+        {
+            Debug.LogError($"На объекте {gameObject.name} выбран тип ObjectResetter, но не указана ссылка на Target Returnable Object в инспекторе!");
         }
     }
 }

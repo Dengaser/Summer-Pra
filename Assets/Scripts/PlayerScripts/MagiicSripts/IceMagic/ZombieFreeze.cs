@@ -7,6 +7,7 @@ public class ZombieFreeze : MonoBehaviour, IIceInteractable
     [Header("Ссылки")]
     public HealthUniversal zombieHealth;
     public NavMeshAgent navMeshAgent;
+    private Animator animator;
 
 
     [Header("Настройки магии")]
@@ -25,6 +26,8 @@ public class ZombieFreeze : MonoBehaviour, IIceInteractable
 
         if (zombieHealth == null) zombieHealth = GetComponent<HealthUniversal>();
         if (navMeshAgent == null) navMeshAgent = GetComponent<NavMeshAgent>();
+
+        animator = GetComponent<Animator>();
 
         if (navMeshAgent != null)
         {
@@ -45,6 +48,9 @@ public class ZombieFreeze : MonoBehaviour, IIceInteractable
         if (zombieHealth != null)
         {
             zombieHealth.TakeDamage(damage);
+
+            if (animator != null) animator.SetTrigger("Hit");
+
         }
 
         if (isFrozen)
@@ -74,9 +80,11 @@ public class ZombieFreeze : MonoBehaviour, IIceInteractable
             // 1. Полная заморозка (скорость = 0)
             navMeshAgent.speed = 0f;
         }
-
+        if (animator != null) animator.speed = 0f;
         // Ждем время полной заморозки
         yield return new WaitForSeconds(freezeDuration);
+
+        if (animator != null) animator.speed = 1f;
 
         // 2. Разморозка и замедление
         if (navMeshAgent != null)

@@ -4,9 +4,9 @@ public class HealthUniversal : MonoBehaviour
 {
     [Header("Настройки значений")]
     public float maxHealth = 100;
-    
-  
-  
+
+    private Animator animator;
+
 
 
     public float currentHealth;
@@ -40,6 +40,7 @@ public class HealthUniversal : MonoBehaviour
             Debug.Log("смерть");
         if (gameObject.CompareTag("Enemy"))
         {
+            
             Destroy(gameObject);
         }
         else

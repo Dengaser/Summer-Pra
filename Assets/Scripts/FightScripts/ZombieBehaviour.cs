@@ -29,14 +29,15 @@ public class ZombieBehaviour : MonoBehaviour
     private bool isPursuing = false;
     private float lastAttackTime;
     private float nextGrowlTime;
+    private Animator animator;
     void Start()
     {
 
 
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.stoppingDistance = stoppingDistance;
+        animator = GetComponent<Animator>();
 
-      
 
         GameObject playerObg = GameObject.FindGameObjectWithTag(playerTag);
         if (playerObg != null)
@@ -54,7 +55,11 @@ public class ZombieBehaviour : MonoBehaviour
 
         HandleGrowling();
 
-        if (player == null) return;
+        if (player == null)
+        {
+            animator.SetBool("isWalking", false);
+            return;
+        }
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
@@ -70,7 +75,10 @@ public class ZombieBehaviour : MonoBehaviour
         {
             navMeshAgent.SetDestination(player.position);
 
-            if(distanceToPlayer <= attackRange)
+            bool isMoving = navMeshAgent.velocity.sqrMagnitude > 0.1f;
+            animator.SetBool("isWalking", isMoving);
+
+            if (distanceToPlayer <= attackRange)
             {
                 TryAttack();
             }
@@ -90,13 +98,17 @@ public class ZombieBehaviour : MonoBehaviour
     {
         if(Time.time - lastAttackTime >= attackCooldown)
         {
-            if(playerHealth != null)
+            
+            if (playerHealth != null)
             {
                 playerHealth.TakeDamage(damage);
+                
 
                 if (attackSound != null)
                 {
                     audioSource.PlayOneShot(attackSound);
+                    animator.SetTrigger("Attack");
+                    animator.SetTrigger("Attack");
                 }
             }
             lastAttackTime = Time.time;
