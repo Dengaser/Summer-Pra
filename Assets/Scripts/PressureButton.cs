@@ -11,6 +11,13 @@ public class PressureButton : MonoBehaviour
 
     private bool isPressed = false;
 
+    private void Start()
+    {
+        // Как только игра запустилась, принудительно обновляем состояние дверей.
+        // Так как isPressed равен false, кнопка сразу скомандует второй двери открыться (встать в верхнюю точку)
+        UpdateDoors();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(targetTag) && !isPressed)
@@ -39,7 +46,7 @@ public class PressureButton : MonoBehaviour
         }
         else
         {
-            // Кнопка отпущена: возвращаем всё назад
+            // Кнопка отпущена или игра только началась: первую закрываем, вторую открываем
             if (doorToOpen != null) doorToOpen.SetOpen(false);
             if (doorToClose != null) doorToClose.SetOpen(true);
         }
