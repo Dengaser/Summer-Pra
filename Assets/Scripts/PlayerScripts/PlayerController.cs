@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public float climbSpeed = 4f;
     private bool isClimbing = false;
     private Vector3 ladderForward;
+    private Collider activeLadderCollider;
 
     private CharacterController controller;
     private Transform cameraTransfom;
@@ -116,8 +117,27 @@ public class PlayerController : MonoBehaviour
        
         Vector3 climbDirection = new Vector3(0f, verticalInput, 0f);
         controller.Move(climbDirection * climbSpeed * Time.deltaTime);
+        if (activeLadderCollider != null && verticalInput > 0)
+        {
+            // Находим самую верхнюю точку коллайдера лестницы в мировых координатах
+            float ladderTopY = activeLadderCollider.bounds.max.y;
 
-        
+            // Если ноги/центр игрока поднялись выше верхней границы коллайдера
+            if (transform.position.y > ladderTopY)
+            {
+                // Отключаем CharacterController на миг, чтобы переместить игрока на площадку
+                controller.enabled = false;
+                // Сдвигаем персонажа чуть вперед (вглубь платформы) и немного вверх
+                transform.position += (-ladderForward * 0.4f) + Vector3.up * 0.2f;
+                controller.enabled = true;
+
+                // Выключаем режим карабканья
+                ToggleClimbing(false, Vector3.zero);
+                return;
+            }
+        }
+
+
         if (Input.GetButtonDown("Jump"))
         {
             Debug.Log("Игрок спрыгнул с лестницы!");
@@ -143,7 +163,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void ToggleClimbing(bool enable, Vector3 ladderForwardDirection)
+    public void ToggleClimbing(bool enable, Vector3 ladderForwardDirection, Collider ladderCollider = null)
     {
         isClimbing = enable;
 
@@ -151,10 +171,10 @@ public class PlayerController : MonoBehaviour
         {
             verticalVelocity = 0f;
             ladderForward = ladderForwardDirection;
+            activeLadderCollider = ladderCollider; // <-- Запоминаем коллайдер
 
             if (ladderForward != Vector3.zero)
             {
-                
                 Vector3 lookDir = -ladderForward;
                 lookDir.y = 0f;
 
@@ -163,16 +183,17 @@ public class PlayerController : MonoBehaviour
                     transform.rotation = Quaternion.LookRotation(lookDir);
                 }
 
-               
                 controller.enabled = false;
-              
                 transform.position += ladderForward * 0.1f;
                 controller.enabled = true;
             }
         }
+        else
+        {
+            activeLadderCollider = null; // <-- Очищаем при выходе
+        }
     }
 
-   
     public void OnEnable()
     {
         if (controller != null)
