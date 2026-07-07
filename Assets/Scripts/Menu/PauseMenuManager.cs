@@ -1,15 +1,23 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PauseMenu : MonoBehaviour
+public class PauseMenuManager : MonoBehaviour
 {
     public GameObject pauseMenuPanel;
+
     private bool isPaused;
+    public static bool IsGamePaused;
 
     void Start()
     {
         Time.timeScale = 1f;
+        isPaused = false;
+        IsGamePaused = false;
+
         pauseMenuPanel.SetActive(false);
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
@@ -26,10 +34,11 @@ public class PauseMenu : MonoBehaviour
     public void PauseGame()
     {
         pauseMenuPanel.SetActive(true);
+
         Time.timeScale = 0f;
         isPaused = true;
+        IsGamePaused = true;
 
-        
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
@@ -37,16 +46,20 @@ public class PauseMenu : MonoBehaviour
     public void ResumeGame()
     {
         pauseMenuPanel.SetActive(false);
+
         Time.timeScale = 1f;
         isPaused = false;
+        IsGamePaused = false;
 
-       
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
+
     public void MainMenu()
     {
         Time.timeScale = 1f;
+        IsGamePaused = false;
+
         SceneManager.LoadScene("MainMenu");
     }
 

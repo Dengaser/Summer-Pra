@@ -9,21 +9,21 @@ public class IceMagic : MonoBehaviour
     public AudioSource AudioSource;
     public AudioClip iceSound;
 
-    [Header("Настройки дистанции")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     public float distance = 5f;
     
-    [Header("Ссылка на игрока")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ")]
     public Transform playerTransform;
     public Camera playerCamera;
 
 
-    [Header("Настройки дорожки льда")]
-    public int iceBlocksCount = 5; // Сколько блоков льда будет в линии
-    public float stepDistance = 1f; // Расстояние между блоками (равно размеру кубика льда)
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ")]
+    public int iceBlocksCount = 5; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
+    public float stepDistance = 1f; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ)
 
-    [Header("Интерфейс")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     public TextMeshProUGUI hintText;
-    [Header("Настройки луча от игрока")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ")]
     public float eyeHeight = 0.5f; 
     [Range(0f, 85f)]
     public float dipAngle = 35f;
@@ -145,7 +145,7 @@ public class IceMagic : MonoBehaviour
         {
             if (hit.collider.CompareTag("Water"))
             {
-                hintText.text = "R|ЛКМ: Заморозить воду "; 
+                hintText.text = "R|пїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ "; 
                 hintText.gameObject.SetActive(true); 
                 return; 
             }
@@ -154,13 +154,13 @@ public class IceMagic : MonoBehaviour
         {
             if (hit_two.collider.CompareTag("Fire")) 
             {
-                hintText.text = "R|ЛКМ: Потушить огонь"; 
+                hintText.text = "R|пїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ"; 
                 hintText.gameObject.SetActive(true); 
                 return; 
             }
             if (hit_two.collider.CompareTag("Enemy"))
             {
-                hintText.text = "R|ЛКМ: Заморозить зомби";
+                hintText.text = "R|пїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ";
                 hintText.gameObject.SetActive(true);
                 return;
             }
@@ -190,23 +190,23 @@ public class IceMagic : MonoBehaviour
         Gizmos.DrawRay(rayStartPoint, rayDirection * distance);
 
 
-        // Определяем точку старта луча
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         
         Vector3 rayDirection_two = playerTransform.forward;
         rayDirection_two.y = 0;
         rayDirection_two.Normalize();
 
-        // Центр коробки находится на половине дистанции луча впереди игрока
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         Vector3 boxCenter = rayStartPoint + rayDirection_two * (distance / 2f);
 
-        // Устанавливаем матрицу Gizmos, чтобы коробка крутилась вслед за персонажем
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ Gizmos, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Gizmos.matrix = Matrix4x4.TRS(boxCenter, playerTransform.rotation, Vector3.one);
 
-        // Рисуем объемную коробку захвата (размеры: ширина, высота, длина луча)
-        Gizmos.color = new Color(1f, 0.92f, 0.016f, 0.3f); // Полупрозрачный желтый
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ)
+        Gizmos.color = new Color(1f, 0.92f, 0.016f, 0.3f); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         Gizmos.DrawCube(Vector3.zero, new Vector3(boxWidth, boxHeight, distance));
 
-        Gizmos.color = Color.yellow; // Контур коробки
+        Gizmos.color = Color.yellow; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Gizmos.DrawWireCube(Vector3.zero, new Vector3(boxWidth, boxHeight, distance));
 
     }
