@@ -1142,8 +1142,8 @@ MonoBehaviour:
   boxWidth: 1.7
   boxHeight: 6.6
   telekinesis: {fileID: 9214215139968124623}
-  zombiePushForce: 25
-  zombieDamage: 30
+  zombiePushForce: 18
+  zombieDamage: 50
   zombieButton: 0
 --- !u!114 &758009962037997105
 MonoBehaviour:

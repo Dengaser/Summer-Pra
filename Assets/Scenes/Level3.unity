@@ -2471,6 +2471,11 @@ AudioSource:
   m_CorrespondingSourceObject: {fileID: 5035858506394041561, guid: 3de295421ac29ac4e9187e2f20291a17, type: 3}
   m_PrefabInstance: {fileID: 530793070}
   m_PrefabAsset: {fileID: 0}
+--- !u!198 &530793073 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1810023546592144320, guid: 3de295421ac29ac4e9187e2f20291a17, type: 3}
+  m_PrefabInstance: {fileID: 530793070}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &552781720 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1018664272722485354, guid: 70364835d5f08a84fafb6b3f9bff8a7c, type: 3}
@@ -9732,7 +9737,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BurnItem
   audioSource: {fileID: 530793072}
   fireClip: {fileID: 8300000, guid: c8584f6d4f1c0564cbaa1858a569e108, type: 3}
-  firePartical: {fileID: 244620743}
+  firePartical: {fileID: 530793073}
   fireDuration: 3
 --- !u!4 &1047670227 stripped
 Transform:
@@ -12424,7 +12429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BurnItem
   audioSource: {fileID: 1776882237}
   fireClip: {fileID: 8300000, guid: c8584f6d4f1c0564cbaa1858a569e108, type: 3}
-  firePartical: {fileID: 244620743}
+  firePartical: {fileID: 1776882238}
   fireDuration: 3
 --- !u!65 &1603379073
 BoxCollider:
@@ -13231,6 +13236,11 @@ Transform:
 --- !u!82 &1776882237 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 5035858506394041561, guid: 3de295421ac29ac4e9187e2f20291a17, type: 3}
+  m_PrefabInstance: {fileID: 1776882235}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &1776882238 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1810023546592144320, guid: 3de295421ac29ac4e9187e2f20291a17, type: 3}
   m_PrefabInstance: {fileID: 1776882235}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1779745156 stripped
@@ -14331,7 +14341,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 0
   useUnscaledTime: 0
@@ -20445,15 +20455,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3577169036198178277, guid: 3de295421ac29ac4e9187e2f20291a17, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.0412
+      value: 0.0519
       objectReference: {fileID: 0}
     - target: {fileID: 3577169036198178277, guid: 3de295421ac29ac4e9187e2f20291a17, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.00159
+      value: 0.00025
       objectReference: {fileID: 0}
     - target: {fileID: 3577169036198178277, guid: 3de295421ac29ac4e9187e2f20291a17, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.002841
+      value: -0.002403
       objectReference: {fileID: 0}
     - target: {fileID: 3724122096095532961, guid: 3de295421ac29ac4e9187e2f20291a17, type: 3}
       propertyPath: m_Name
