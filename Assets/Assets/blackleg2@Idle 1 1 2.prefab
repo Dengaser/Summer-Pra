@@ -1096,11 +1096,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::IceMagic
   AudioSource: {fileID: 6441749378368274955}
   iceSound: {fileID: 8300000, guid: 76edb08d36cbd2c4c8652c18b5e770fb, type: 3}
-  distance: 8.2
+  distance: 10.41
   playerTransform: {fileID: 3464593378586229109}
   playerCamera: {fileID: 3340134492564403178}
-  iceBlocksCount: 5
-  stepDistance: 1
+  iceBlocksCount: 2
+  stepDistance: 8
   hintText: {fileID: 2016365126038005550}
   eyeHeight: 3.4
   dipAngle: 35
