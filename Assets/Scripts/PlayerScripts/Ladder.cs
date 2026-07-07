@@ -9,12 +9,11 @@ public class Ladder : MonoBehaviour
             PlayerController player = other.GetComponent<PlayerController>();
             if (player != null)
             {
-           
-                player.ToggleClimbing(true, transform.forward);
+                // Передаем true, направление и сам этот коллайдер (this.GetComponent<Collider>())
+                player.ToggleClimbing(true, transform.forward, GetComponent<Collider>());
             }
         }
     }
-
 
     private void OnTriggerExit(Collider other)
     {

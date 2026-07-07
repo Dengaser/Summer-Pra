@@ -1,11 +1,16 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ChapterEndController : MonoBehaviour
 {
     [Header("Перетащите сюда главный Canvas (на котором висит Canvas Group)")]
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private float fadeDuration = 2.5f; // Время потемнения экрана в секундах
+
+    [Header("Настройки смены сцены")]
+    [SerializeField] private string nextSceneName;
+
 
     private void Awake()
     {
@@ -44,5 +49,18 @@ public class ChapterEndController : MonoBehaviour
 
         canvasGroup.alpha = 1f;
         Debug.Log("[ChapterEndController] Экран полностью стал черным, текст отображен.");
+
+
+        yield return new WaitForSeconds(1f);
+
+        // 3. Загружаем новую сцену
+        if (!string.IsNullOrEmpty(nextSceneName))
+        {
+            SceneManager.LoadScene(nextSceneName);
+        }
+        else
+        {
+            Debug.LogError("[ChapterEndController] Имя следующей сцены не указано в инспекторе!");
+        }
     }
 }
