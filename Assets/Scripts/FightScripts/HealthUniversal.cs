@@ -55,6 +55,16 @@ public class HealthUniversal : MonoBehaviour
 
     private void RestartCurrentScene()
     {
+        // Ищем скрипт переключения магии на сцене
+        SwitchMagic switchMagic = FindFirstObjectByType<SwitchMagic>();
+
+        if (switchMagic != null)
+        {
+            // Даем команду откатить прогресс магий до состояния «старт уровня»
+            switchMagic.LoadProgress(resetToLevelStart: true);
+        }
+
+        // Перезапускаем сцену
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
     }

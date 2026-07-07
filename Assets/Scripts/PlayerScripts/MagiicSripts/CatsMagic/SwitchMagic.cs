@@ -24,13 +24,18 @@ public class SwitchMagic : MonoBehaviour
     private int currentAbilityIndex = 0; 
     private int collectedCatsCount = 0;
 
+    private int catsAtLevelStart = 0;
+
     void Start()
     {
         // 1. Загружаем сохраненный прогресс
         LoadProgress();
 
-        // 2. Обновляем доступные способности
-        RefreshAvailableAbilities(); 
+        // 2. ЗАПОМИНАЕМ, сколько у нас было котов на старте уровня
+        catsAtLevelStart = collectedCatsCount;
+
+        // 3. Обновляем доступные способности
+        RefreshAvailableAbilities();
     }
 
     void Update()
@@ -90,10 +95,29 @@ public class SwitchMagic : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    private void LoadProgress()
+    public void LoadProgress(bool resetToLevelStart = false)
     {
-        collectedCatsCount = PlayerPrefs.GetInt("TotalUnlockedCats", 0);
+        if (resetToLevelStart)
+        {
+            // Откатываем счётчик к значению, которое было при заходе на уровень
+            collectedCatsCount = catsAtLevelStart;
 
+            // Перезаписываем откаченный результат в PlayerPrefs перед смертью/перезапуском
+            SaveProgress();
+        }
+        else
+        {
+            // Обычная загрузка при старте сцены
+            collectedCatsCount = PlayerPrefs.GetInt("TotalUnlockedCats", 0);
+        }
+
+        // Сначала блокируем ВСЕ способности (сбрасываем старое состояние в памяти скрипта)
+        foreach (var ability in abilities)
+        {
+            ability.isUnlocked = false;
+        }
+
+        // Открываем только те, что укладываются в наш текущий счётчик
         for (int i = 0; i < collectedCatsCount; i++)
         {
             if (i < abilities.Count)
