@@ -8930,6 +8930,10 @@ PrefabInstance:
       propertyPath: 'slots.Array.data[2]'
       value: 
       objectReference: {fileID: 1734580145}
+    - target: {fileID: 2062934772420904942, guid: 287db8d7c54d0de4fa8e6f87e5f12b6b, type: 3}
+      propertyPath: m_TagString
+      value: Useable
+      objectReference: {fileID: 0}
     - target: {fileID: 5226689026492399123, guid: 287db8d7c54d0de4fa8e6f87e5f12b6b, type: 3}
       propertyPath: canvasGroup
       value: 
