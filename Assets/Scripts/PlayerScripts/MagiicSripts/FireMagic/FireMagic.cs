@@ -48,21 +48,13 @@ public class FireMagic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R) || Input.GetMouseButtonDown((int)MouseButton.Left))
         {
-            if (fireParticle != null)
-            {
-                fireParticle.transform.forward = playerTransform.forward;
-                fireParticle.Play();
-            }
-
-            if (AudioSource != null && fireSound != null)
-                AudioSource.PlayOneShot(fireSound);
             CastFire();
         }
     }
 
 
 
-    private bool CastBox(float customDistance, out RaycastHit hit)
+    private RaycastHit[] CastBoxAll(float customDistance)
     {
         Vector3 rayDirection = playerTransform.forward;
         rayDirection.y = 0;
@@ -71,51 +63,57 @@ public class FireMagic : MonoBehaviour
         Vector3 rayStartPoint = playerTransform.position + Vector3.up * eyeHeight + rayDirection * spawnOffset;
         float castDistance = Mathf.Max(0.1f, customDistance - spawnOffset);
 
-        return Physics.BoxCast(rayStartPoint, BoxHalfExtents, rayDirection, out hit, playerTransform.rotation, castDistance);
-
+        // BoxCastAll находит ВСЕ цели по траектории коробки
+        return Physics.BoxCastAll(rayStartPoint, BoxHalfExtents, rayDirection, playerTransform.rotation, castDistance);
     }
 
-    private void   CastFire()
+    private void CastFire()
     {
         if (playerTransform == null) return;
 
-        
-        bool hitFire = CastBox(distance, out RaycastHit hit);
+        // Получаем все цели в зоне поражения
+        RaycastHit[] hits = CastBoxAll(distance);
 
-
-        if (!hitFire)
+        if (hits == null || hits.Length == 0)
             return;
 
-
-        
-
-        if (hitFire && hit.collider.transform != playerTransform && hit.collider.TryGetComponent(out IFireInteractable target))
+        // Эффекты запускаем один раз при касте
+        if (fireParticle != null)
         {
-            target.OnFire();
+            fireParticle.transform.forward = playerTransform.forward;
+            fireParticle.Play();
         }
 
+        if (AudioSource != null && fireSound != null)
+            AudioSource.PlayOneShot(fireSound);
+
+        // Проходим циклом по ВСЕМ попаданиям
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.transform != playerTransform && hit.collider.TryGetComponent(out IFireInteractable target))
+            {
+                target.OnFire();
+            }
+        }
     }
 
     private void UpdateUI()
     {
         if (hintText == null || playerTransform == null)
             return;
-      
-        if (CastBox(distance, out RaycastHit hit))
+
+        RaycastHit[] hits = CastBoxAll(distance);
+
+        // Проверяем, есть ли среди целей хоть один зомби или поджигаемый объект
+        foreach (RaycastHit hit in hits)
         {
-            //if (hit.collider.CompareTag("Fire"))
-            //{
-            //    hintText.text = "R|ЛКМ: Поджечь";
-            //    hintText.gameObject.SetActive(true);
-            //    return;
-            //}
             if (hit.collider.CompareTag("Enemy"))
             {
                 hintText.text = "R|ЛКМ: Поджечь зомби";
                 hintText.gameObject.SetActive(true);
-                return;
+                return; // Выходим из метода, так как текст уже включили
             }
-            if(hit.collider.CompareTag("Burn"))
+            if (hit.collider.CompareTag("Burn"))
             {
                 hintText.text = "R|ЛКМ: Поджечь";
                 hintText.gameObject.SetActive(true);

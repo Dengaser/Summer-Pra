@@ -28,6 +28,14 @@ public class CauldronCore : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
+
+        if (other.CompareTag("Player"))
+        {
+            return;
+        }
+
+
         // Проверяем, совпадает ли имя упавшего объекта с текущим шагом
         if (other.gameObject.name == correctSequence[currentStep])
         {

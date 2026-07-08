@@ -5,11 +5,17 @@ public class MainMenu : MonoBehaviour
 {
     public void PlayGame()
     {
+        
+        PlayerPrefs.DeleteKey("TotalUnlockedCats");
+        PlayerPrefs.Save();
+
+        
         SceneManager.LoadScene("DaniilA");
     }
-
     public void QuitGame()
     {
         Application.Quit();
     }
 }
+
+   
