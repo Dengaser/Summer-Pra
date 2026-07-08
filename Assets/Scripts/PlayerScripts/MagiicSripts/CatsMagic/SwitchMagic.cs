@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SwitchMagic : MonoBehaviour
 {
@@ -28,13 +29,50 @@ public class SwitchMagic : MonoBehaviour
 
     void Start()
     {
-        // 1. ��������� ����������� ��������
-        LoadProgress();
 
-        // 2. ����������, ������� � ��� ���� ����� �� ������ ������
+        LoadProgress();
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        bool progressCorrected = false;
+
+
+        if (currentSceneName == "Level2") 
+        {
+            if (collectedCatsCount < 1)
+            {
+                collectedCatsCount = 1;
+                progressCorrected = true;
+            }
+        }
+        else if (currentSceneName == "Level3") 
+        {
+            if (collectedCatsCount < 2)
+            {
+                collectedCatsCount = 2;
+                progressCorrected = true;
+            }
+        }
+
+        
+        if (progressCorrected)
+        {
+          
+            for (int i = 0; i < collectedCatsCount; i++)
+            {
+                if (i < abilities.Count)
+                {
+                    abilities[i].isUnlocked = true;
+                }
+            }
+
+            
+            SaveProgress();
+        }
+       
+
+        // 2. Запоминаем проверенное количество котов на начало уровня
         catsAtLevelStart = collectedCatsCount;
 
-        // 3. ��������� ��������� �����������
+        // 3. Обновляем доступные способности и UI
         RefreshAvailableAbilities();
     }
 
@@ -238,7 +276,7 @@ public class SwitchMagic : MonoBehaviour
             CancelInvoke(nameof(HideNotification)); 
 
             
-            notificationText.text = $"�������� �����������:\n<color=#FFD700>{abilityName}</color>!\n<size=80%>������������: R|���</size>";
+            notificationText.text = $"Получена способность:\n<color=#FFD700>{abilityName}</color>!\n<size=80%>Использовать: R|ЛКМ</size>";
             notificationText.gameObject.SetActive(true); 
 
             // �������� ������� ������� ����� ����� 3 �������
