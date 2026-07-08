@@ -6422,7 +6422,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ZombieFreeze
   zombieHealth: {fileID: 3040917624467269215}
   navMeshAgent: {fileID: 5064133472424233479}
-  damage: 30
+  damage: 40
   freezeDuration: 3
   slowDuration: 4
   slowEffectiveness: 0.5
@@ -6443,8 +6443,8 @@ MonoBehaviour:
   fireParticle: {fileID: 7273071753396012363}
   damage: 30
   fireDistance: 3
-  fireDuration: 4
-  fireDamage: 5
+  fireDuration: 100
+  fireDamage: 15
   spreadInterval: 1
 --- !u!1 &5279810697016641840
 GameObject:

@@ -3,18 +3,25 @@ using UnityEngine;
 using UnityEngine.AI;
 public class ZombieAttackTelekinesis : Telekinesis
 {
+    private Animator animator;
     [Header("Настройки толчка зомби")]
     public float zombiePushForce = 40f;   // Сила отталкивания для зомби
     public float zombieDamage = 30f;      // Урон зомби
     public MouseButton zombieButton = MouseButton.Left;
 
-    
+
+
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
+
     protected override void Update()
     {
         base.Update();
         if (Input.GetMouseButtonDown((int)zombieButton) || Input.GetKeyDown(KeyCode.R))
         {
-            
+            animator.SetTrigger("Skill");
             TryAttackZombie();
 
         }

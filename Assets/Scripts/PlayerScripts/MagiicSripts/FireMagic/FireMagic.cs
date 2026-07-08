@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FireMagic : MonoBehaviour
 {
-
+    private Animator animator;
     public AudioSource AudioSource;
     public AudioClip fireSound;
 
@@ -30,7 +30,8 @@ public class FireMagic : MonoBehaviour
 
     void Start()
     {
-        
+        animator = GetComponent<Animator>();
+
     }
 
     
@@ -48,6 +49,7 @@ public class FireMagic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R) || Input.GetMouseButtonDown((int)MouseButton.Left))
         {
+            animator.SetTrigger("Skill");
             CastFire();
         }
     }

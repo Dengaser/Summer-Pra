@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class IceMagic : MonoBehaviour
 {
+    private Animator animator;
     public AudioSource AudioSource;
     public AudioClip iceSound;
 
@@ -39,7 +40,7 @@ public class IceMagic : MonoBehaviour
 
     void Start()
     {
-        
+        animator = GetComponent<Animator>();
     }
 
     
@@ -56,6 +57,7 @@ public class IceMagic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R) || Input.GetMouseButtonDown((int)MouseButton.Left))
         {
+            animator.SetTrigger("Skill");
             if (iceParticle != null)
             {
                 iceParticle.transform.forward = playerTransform.forward;
