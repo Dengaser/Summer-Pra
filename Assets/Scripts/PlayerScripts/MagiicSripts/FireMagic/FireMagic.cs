@@ -48,6 +48,14 @@ public class FireMagic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R) || Input.GetMouseButtonDown((int)MouseButton.Left))
         {
+            if (fireParticle != null)
+            {
+                fireParticle.transform.forward = playerTransform.forward;
+                fireParticle.Play();
+            }
+
+            if (AudioSource != null && fireSound != null)
+                AudioSource.PlayOneShot(fireSound);
             CastFire();
         }
     }
@@ -79,14 +87,7 @@ public class FireMagic : MonoBehaviour
             return;
 
 
-        if (fireParticle != null)
-        {
-            fireParticle.transform.forward = playerTransform.forward;
-            fireParticle.Play();
-        }
-
-        if (AudioSource != null && fireSound != null)
-            AudioSource.PlayOneShot(fireSound);
+        
 
         if (hitFire && hit.collider.transform != playerTransform && hit.collider.TryGetComponent(out IFireInteractable target))
         {
