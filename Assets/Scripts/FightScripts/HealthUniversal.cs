@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class HealthUniversal : MonoBehaviour
 {
-    [Header("Настройки значений")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     public float maxHealth = 100;
 
     private Animator animator;
@@ -37,7 +37,7 @@ public class HealthUniversal : MonoBehaviour
     private void Death()
     {
         
-            Debug.Log("смерть");
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ");
         if (gameObject.CompareTag("Enemy"))
         {
             
@@ -45,7 +45,12 @@ public class HealthUniversal : MonoBehaviour
         }
         else
         {
-            RestartCurrentScene();
+            GameOverMenuManager gameOver = FindAnyObjectByType<GameOverMenuManager>();
+
+            if (gameOver != null)
+            {
+                gameOver.ShowGameOver();
+            }
         }
             
 
@@ -55,16 +60,16 @@ public class HealthUniversal : MonoBehaviour
 
     private void RestartCurrentScene()
     {
-        // Ищем скрипт переключения магии на сцене
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         SwitchMagic switchMagic = FindFirstObjectByType<SwitchMagic>();
 
         if (switchMagic != null)
         {
-            // Даем команду откатить прогресс магий до состояния «старт уровня»
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             switchMagic.LoadProgress(resetToLevelStart: true);
         }
 
-        // Перезапускаем сцену
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
     }

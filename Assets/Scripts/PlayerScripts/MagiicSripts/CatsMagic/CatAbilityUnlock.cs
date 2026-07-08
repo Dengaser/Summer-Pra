@@ -5,7 +5,7 @@ public class CatAbilityUnlock : MonoBehaviour
 {
     [SerializeField] private string playerTag = "Player";
 
-    [Header("Настройки мяуканья")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private AudioClip[] meowSounds; 
     [SerializeField] private float minMeowInterval = 5f;
     [SerializeField] private float maxMeowInterval = 12f;
@@ -67,7 +67,7 @@ public class CatAbilityUnlock : MonoBehaviour
             }
             else
             {
-                Debug.LogError("На объекте игрока не найден скрипт SwitchMagic!");
+                Debug.LogError("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ SwitchMagic!");
             }
         }
     }
