@@ -53,6 +53,18 @@ public class ChapterEndController : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            SwitchMagic playerMagic = player.GetComponent<SwitchMagic>();
+            if (playerMagic != null)
+            {
+                playerMagic.SaveProgress();
+                Debug.Log("[ChapterEndController] Прогресс котов успешно сохранен!");
+            }
+        }
+
+
         // 3. Загружаем новую сцену
         if (!string.IsNullOrEmpty(nextSceneName))
         {

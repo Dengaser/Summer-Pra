@@ -67,7 +67,7 @@ public class SwitchMagic : MonoBehaviour
             collectedCatsCount++;
 
             // ��������� �������� � ������
-            SaveProgress();
+            //SaveProgress();
 
             // ������������� ������ �������� ������������
             RefreshAvailableAbilities();
@@ -89,7 +89,7 @@ public class SwitchMagic : MonoBehaviour
         }
     }
 
-    private void SaveProgress()
+    public void SaveProgress()
     {
         PlayerPrefs.SetInt("TotalUnlockedCats", collectedCatsCount);
         PlayerPrefs.Save();
@@ -125,6 +125,11 @@ public class SwitchMagic : MonoBehaviour
                 abilities[i].isUnlocked = true;
             }
         }
+    }
+    public void ResetToLevelStart()
+    {
+       
+        LoadProgress(resetToLevelStart: true);
     }
 
     /// ��������� ������: ��������� ������ �� �����������, ������� ������ ��������������.

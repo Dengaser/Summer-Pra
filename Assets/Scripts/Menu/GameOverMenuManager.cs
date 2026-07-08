@@ -22,13 +22,25 @@ public class GameOverMenuManager : MonoBehaviour
 
     public void TryAgain()
     {
-        Time.timeScale = 1f;
+        Time.timeScale = 1f; 
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            SwitchMagic playerMagic = player.GetComponent<SwitchMagic>();
+            if (playerMagic != null)
+            {
+                
+                playerMagic.LoadProgress(resetToLevelStart: true);
+            }
+        }
 
-        Scene currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(currentScene.name);
+        Cursor.visible = false; 
+        Cursor.lockState = CursorLockMode.Locked; 
+
+        Scene currentScene = SceneManager.GetActiveScene(); 
+        SceneManager.LoadScene(currentScene.name); 
     }
 
     public void MainMenu()
