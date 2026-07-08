@@ -31,6 +31,29 @@ public class PauseMenuManager : MonoBehaviour
         }
     }
 
+    public void TryAgain()
+    {
+        Time.timeScale = 1f;
+
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            SwitchMagic playerMagic = player.GetComponent<SwitchMagic>();
+            if (playerMagic != null)
+            {
+
+                playerMagic.LoadProgress(resetToLevelStart: true);
+            }
+        }
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
+    }
+
     public void PauseGame()
     {
         pauseMenuPanel.SetActive(true);
