@@ -101,7 +101,7 @@ public class FireMagic : MonoBehaviour
     {
         if (hintText == null || playerTransform == null)
             return;
-
+if (playerTransform == null) return;
         RaycastHit[] hits = CastBoxAll(distance);
 
         // Проверяем, есть ли среди целей хоть один зомби или поджигаемый объект
