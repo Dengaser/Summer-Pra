@@ -35,7 +35,15 @@ public class SwitchMagic : MonoBehaviour
         bool progressCorrected = false;
 
 
-        if (currentSceneName == "Level2") 
+        if (currentSceneName == "DaniilA")
+        {
+            if (collectedCatsCount > 0)
+            {
+                collectedCatsCount = 0;
+                progressCorrected = true;
+            }
+        }
+        else if (currentSceneName == "Level2")
         {
             if (collectedCatsCount < 1)
             {
@@ -43,7 +51,7 @@ public class SwitchMagic : MonoBehaviour
                 progressCorrected = true;
             }
         }
-        else if (currentSceneName == "Level3") 
+        else if (currentSceneName == "Level3")
         {
             if (collectedCatsCount < 2)
             {
@@ -51,7 +59,7 @@ public class SwitchMagic : MonoBehaviour
                 progressCorrected = true;
             }
         }
-
+        
         
         if (progressCorrected)
         {
@@ -205,14 +213,14 @@ public class SwitchMagic : MonoBehaviour
         }
     }
 
-    // ���������� ����������� �� ������� �� ������ ���������
+   
     private void SelectAbility(int index)
     {
         if (index < 0 || index >= activeAbilities.Count) return; 
 
         currentAbilityIndex = index;
 
-        // ��� 1: ������� ��������� ��������� ��� ������� ����� �� ������
+       
         foreach (var ability in abilities)
         {
             if (ability.script != null)
@@ -221,22 +229,22 @@ public class SwitchMagic : MonoBehaviour
             }
         }
 
-        // ��� 2: �������� ������ ���� �������� ������, ��������� � ������ ������
+       
         if (activeAbilities[currentAbilityIndex].script != null)
         {
             activeAbilities[currentAbilityIndex].script.enabled = true;
         }
 
-        // ��������� ���� ������ ������������ � UI[
+        
         UpdateUI(); 
     }
 
-    /// ���������� ������������ ������ ��� UI �� ������ ���������� �������� ������������
+    
     private void UpdateUI() 
     {
         if (magicText == null) return; 
 
-        // ���� ������������ 0 ��� ����� ���� � ������ �� ����� �� ������
+        
         if (activeAbilities.Count <= 1) 
         {
             magicText.text = ""; 
@@ -272,14 +280,14 @@ public class SwitchMagic : MonoBehaviour
     {
         if (notificationText != null)
         {
-            // �������� ������� �������, ���� ����� ��������� ������� ���� ����� ������
+           
             CancelInvoke(nameof(HideNotification)); 
 
             
             notificationText.text = $"Получена способность:\n<color=#FFD700>{abilityName}</color>!\n<size=80%>Использовать: R|ЛКМ</size>";
             notificationText.gameObject.SetActive(true); 
 
-            // �������� ������� ������� ����� ����� 3 �������
+           
             Invoke(nameof(HideNotification), 3f); 
         }
     }

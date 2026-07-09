@@ -6445,59 +6445,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1767028679}
   m_SourcePrefab: {fileID: 100100000, guid: f15aef65b6580e548859d6f12ca7735f, type: 3}
---- !u!1 &1426235267
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1426235268}
-  - component: {fileID: 1426235269}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1426235268
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1426235267}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.74, y: 16.64, z: -0.82}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1984595936}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1426235269
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1426235267}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 6, y: 1, z: 1.69}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1428060535
 GameObject:
   m_ObjectHideFlags: 0
@@ -9375,8 +9322,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4.39, y: 29.4, z: 1.44}
-  m_Center: {x: -2.17, y: -1.09, z: 0.48}
+  m_Size: {x: 4.39, y: 33.2, z: 1.44}
+  m_Center: {x: -2.17, y: 0.38, z: 0.48}
 --- !u!4 &1984595936
 Transform:
   m_ObjectHideFlags: 0
@@ -9391,7 +9338,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 131495562}
-  - {fileID: 1426235268}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -89.977, z: 0}
 --- !u!1 &2038127565 stripped
