@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -73,13 +74,11 @@ public class FireMagic : MonoBehaviour
     {
         if (playerTransform == null) return;
 
-        // Получаем все цели в зоне поражения
         RaycastHit[] hits = CastBoxAll(distance);
 
         if (hits == null || hits.Length == 0)
             return;
 
-        // Эффекты запускаем один раз при касте
         if (fireParticle != null)
         {
             fireParticle.transform.forward = playerTransform.forward;
@@ -89,13 +88,31 @@ public class FireMagic : MonoBehaviour
         if (AudioSource != null && fireSound != null)
             AudioSource.PlayOneShot(fireSound);
 
-        // Проходим циклом по ВСЕМ попаданиям
+        // Собираем уникальные компоненты, чтобы не спамить вызовы
+        HashSet<IFireInteractable> uniqueTargets = new HashSet<IFireInteractable>();
+
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.transform != playerTransform && hit.collider.TryGetComponent(out IFireInteractable target))
+            if (hit.collider.transform != playerTransform)
             {
-                target.OnFire();
+                // Пытаемся найти на самом коллайдере, а если нет — на родителе (для зомби)
+                IFireInteractable target = hit.collider.GetComponent<IFireInteractable>();
+                if (target == null)
+                {
+                    target = hit.collider.GetComponentInParent<IFireInteractable>();
+                }
+
+                if (target != null)
+                {
+                    uniqueTargets.Add(target);
+                }
             }
+        }
+
+        // Вызываем поджог у всех найденных объектов
+        foreach (IFireInteractable target in uniqueTargets)
+        {
+            target.OnFire();
         }
     }
 

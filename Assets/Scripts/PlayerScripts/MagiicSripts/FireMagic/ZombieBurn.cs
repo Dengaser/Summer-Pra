@@ -19,6 +19,7 @@ public class ZombieBurn : MonoBehaviour, IFireInteractable
 
     private bool isBurning = false;
     private Coroutine burnCoroutine;
+    private float elapsedTime = 0f;
 
     void Start()
     {
@@ -40,22 +41,23 @@ public class ZombieBurn : MonoBehaviour, IFireInteractable
 
     public void OnFire()
     {
+        // Первоначальный урон (25) теперь наносится ВСЕГДА при каждом попадании магии
+        if (zombieHealth != null)
+        {
+            zombieHealth.TakeDamage(damage);
+            if (animator != null) animator.SetTrigger("Hit");
+        }
+
         if (isBurning)
         {
-            if (burnCoroutine != null) StopCoroutine(burnCoroutine);
+            // Если уже горит, просто сбрасываем время горения в начало (продлеваем эффект)
+            // Корутину НЕ перезапускаем, чтобы не сбивать WaitForSeconds
+            elapsedTime = 0f;
         }
         else
         {
-            // Наносим первоначальный урон только при первом поджоге
-            if (zombieHealth != null)
-            {
-                zombieHealth.TakeDamage(damage);
-                if (animator != null) animator.SetTrigger("Hit");
-            }
+            burnCoroutine = StartCoroutine(FireRoutine());
         }
-
-        burnCoroutine = StartCoroutine(FireRoutine());
-
     }
 
     private IEnumerator FireRoutine()
@@ -67,25 +69,24 @@ public class ZombieBurn : MonoBehaviour, IFireInteractable
             fireParticle.Play();
         }
 
-        float elapsed = 0f;
+        elapsedTime = 0f;
         float spreadTimer = 0f;
 
-        // Цикл работает, пока не кончится время горения
-        while (elapsed < fireDuration)
+        // Цикл работает, пока накопленное время меньше длительности горения
+        while (elapsedTime < fireDuration)
         {
             yield return new WaitForSeconds(1f);
-            elapsed += 1f;
+            elapsedTime += 1f;
             spreadTimer += 1f;
 
-            // Наносим периодический урон
+            // Наносим периодический урон (5)
             if (zombieHealth != null)
             {
                 zombieHealth.TakeDamage(fireDamage);
-
                 if (animator != null) animator.SetTrigger("Hit");
             }
 
-            // Каждую секунду (или с заданным интервалом) пытаемся поджечь соседей
+            // Пытаемся поджечь соседей
             if (spreadTimer >= spreadInterval)
             {
                 SpreadFire();
@@ -95,7 +96,6 @@ public class ZombieBurn : MonoBehaviour, IFireInteractable
 
         ExtinguishFire();
     }
-
     private void SpreadFire()
     {
         // Ищем все коллайдеры в радиусе fireDistance
