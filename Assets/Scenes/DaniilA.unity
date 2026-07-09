@@ -924,6 +924,33 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4b86f9a590b57ef4aa33c1955c1cabb3, type: 3}
+--- !u!1 &258547155 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d506dbcfdeecb414486bc8357ec80ebf, type: 3}
+  m_PrefabInstance: {fileID: 1176010117}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &258547159
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258547155}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 7285641324128850035, guid: d506dbcfdeecb414486bc8357ec80ebf, type: 3}
 --- !u!1001 &270167977
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1733,6 +1760,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2816831734691548057, guid: 9c046e87f6d081643b0ab281bafe2b32, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e6cd6fc4dddaf5f449f781fd1fc22beb, type: 2}
     - target: {fileID: 2821655904238734759, guid: 9c046e87f6d081643b0ab281bafe2b32, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -5702,7 +5733,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d506dbcfdeecb414486bc8357ec80ebf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 258547159}
   m_SourcePrefab: {fileID: 100100000, guid: d506dbcfdeecb414486bc8357ec80ebf, type: 3}
 --- !u!1 &1189488258 stripped
 GameObject:
@@ -10119,6 +10153,10 @@ PrefabInstance:
       propertyPath: canvasGroup
       value: 
       objectReference: {fileID: 1325457047}
+    - target: {fileID: 5226689026492399123, guid: 287db8d7c54d0de4fa8e6f87e5f12b6b, type: 3}
+      propertyPath: fadeDuration
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5226689026492399123, guid: 287db8d7c54d0de4fa8e6f87e5f12b6b, type: 3}
       propertyPath: nextSceneName
       value: Level2
